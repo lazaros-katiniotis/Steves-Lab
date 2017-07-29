@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour {
         velocity = movementDirection * speed * Time.fixedDeltaTime;
 
         if (Input.GetButtonDown("Use")) {
-            foreach (GameObject obj in MachineManager.GetInstance().machines) {
+            foreach (GameObject obj in GameManager.GetInstance().machines) {
                 float xDelta = Mathf.Abs(obj.transform.position.x - this.transform.position.x);
                 float yDelta = Mathf.Abs(obj.transform.position.y - this.transform.position.y);
                 float distance = Mathf.Sqrt(xDelta * xDelta + yDelta * yDelta);

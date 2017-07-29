@@ -23,7 +23,7 @@ public class BlinkingLightEffect : MonoBehaviour {
         //rangeScaleOffset = Random.Range(0.4f, 0.6f);
         //phaseOffset = Random.Range(0.25f, 0.5f);
 
-        Debug.Log(transform.name + ": " + baseRangeOffset + ", " + rangeScaleOffset + ", " + phaseOffset);
+        //Debug.Log(transform.name + ": " + baseRangeOffset + ", " + rangeScaleOffset + ", " + phaseOffset);
     }
 
     void Update() {

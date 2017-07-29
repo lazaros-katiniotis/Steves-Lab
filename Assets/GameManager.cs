@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MachineManager : MonoBehaviour {
+public class GameManager : MonoBehaviour {
 
     public List<GameObject> machines;
-    private static MachineManager instance;
+    public PlayerController player;
+    private static GameManager instance;
 
     void Start() {
         if (instance == null) {
@@ -20,7 +21,7 @@ public class MachineManager : MonoBehaviour {
 
     }
 
-    public static MachineManager GetInstance() {
+    public static GameManager GetInstance() {
         return instance;
     }
 }

@@ -18,8 +18,11 @@ public class MachineScript : MonoBehaviour {
 	}
 
     public void ToggleMachineFunction() {
-        foreach (GameObject obj in affectedObjects) {
-            obj.SetActive(!obj.activeSelf);
-        }
+        Debug.Log("Machine function togled!");
+        //foreach (GameObject obj in affectedObjects) {
+        //    obj.SetActive(!obj.activeSelf);
+        //}
+
+        //StartCoroutine()
     }
 }
