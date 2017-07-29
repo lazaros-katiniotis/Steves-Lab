@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour {
 
@@ -15,16 +16,28 @@ public class PlayerController : MonoBehaviour {
 
     private float oxygenLevel;
 
+    public RoomScript currentRoom;
+    public TextMeshProUGUI roomOxygenText;
+
     // Use this for initialization
     void Start() {
         rb = GetComponent<Rigidbody2D>();
         inventoryManager = inventory.GetComponent<InventoryManager>();
     }
 
+    public void SetCurrentRoom(RoomScript room) {
+        currentRoom = room;
+    }
+
     private Vector2 movementDirection;
 
     // Update is called once per frame
     void Update() {
+        if (currentRoom != null) {
+            roomOxygenText.text = "Room Oxygen%: " + currentRoom.GetCurrentOxygenPercent().ToString("F2");
+        } else {
+            roomOxygenText.text = "No Room";
+        }
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
@@ -37,8 +50,7 @@ public class PlayerController : MonoBehaviour {
                 float xDelta = Mathf.Abs(obj.transform.position.x - this.transform.position.x);
                 float yDelta = Mathf.Abs(obj.transform.position.y - this.transform.position.y);
                 float distance = Mathf.Sqrt(xDelta * xDelta + yDelta * yDelta);
-                if (distance < 1.0f) {
-                    //obj.BroadcastMessage("ToggleMachineFunction", SendMessageOptions.DontRequireReceiver);
+                if (distance < 1.25f) {
                     obj.GetComponent<MachineScript>().ToggleMachineFunction();
                 }
             }
@@ -59,7 +71,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
-        Debug.Log("COLLISION ENTER!");
+
     }
 
 

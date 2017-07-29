@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlinkingLightEffect : MonoBehaviour {
+public class BlinkingLightScript : TogglableObject {
 
     public float baseRange;
     public Color baseColor;

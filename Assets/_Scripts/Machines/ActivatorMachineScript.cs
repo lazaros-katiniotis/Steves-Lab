@@ -5,20 +5,17 @@ using UnityEngine;
 
 public class ActivatorMachineScript : MachineScript {
 
-    // Use this for initialization
-    void Start() {
-
-    }
-
-    // Update is called once per frame
-    void Update() {
-
-    }
-
     public override void ToggleMachineFunction() {
         Debug.Log("Machine function togled!");
-        foreach (GameObject obj in affectedObjects) {
-            obj.SetActive(!obj.activeSelf);
+        foreach (TogglableObject obj in affectedObjects) {
+            Type type = obj.GetType();
+            if (obj.GetType() == typeof(BlinkingLightScript)) {
+                obj.gameObject.SetActive(!obj.gameObject.activeSelf);
+            } else if (obj.GetType() == typeof(OxygenVentScript)) {
+                OxygenVentScript vent = obj.GetComponent<OxygenVentScript>();
+                vent.ToggleVent();
+                Debug.Log("Vent: " + vent.transform.name + " is activated:" + vent.IsActivated());
+            }
         }
     }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class MachineScript : MonoBehaviour {
 
-    public List<GameObject> affectedObjects;
+    public List<TogglableObject> affectedObjects;
 
     void Start() {
 

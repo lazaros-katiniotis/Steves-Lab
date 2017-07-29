@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,12 +10,24 @@ public class DoorScript : MonoBehaviour {
     public Transform lockedLightTransform;
     public Transform unlockedLightTransform;
 
+    public RoomScript previousRoom;
+    public RoomScript nextRoom;
+
     private bool locked = true;
 
     // Use this for initialization
     void Start() {
         CloseDoor();
         locked = true;
+    }
+
+    public RoomScript GetNextRoom() {
+        return nextRoom;
+    }
+
+
+    public RoomScript GetPreviousRoom() {
+        return previousRoom;
     }
 
     // Update is called once per frame
@@ -54,6 +67,7 @@ public class DoorScript : MonoBehaviour {
     }
 
     public void Unlock() {
+        OpenDoor();
         locked = false;
         lockedLightTransform.gameObject.SetActive(false);
         unlockedLightTransform.gameObject.SetActive(true);

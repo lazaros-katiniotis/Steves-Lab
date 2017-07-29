@@ -21,8 +21,6 @@ public class DoorMachineScript : MachineScript {
         Debug.Log("Will unlock door after removing a keycard.");
         if (doorScript.IsLocked()) {
             doorScript.Unlock();
-        } else {
-            doorScript.Lock();
         }
     }
 
