@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour {
 
     private InventoryManager inventoryManager;
 
+    private Vector2 velocity;
+
+    private float oxygenLevel;
+
     // Use this for initialization
     void Start() {
         rb = GetComponent<Rigidbody2D>();
@@ -25,6 +29,19 @@ public class PlayerController : MonoBehaviour {
         float v = Input.GetAxisRaw("Vertical");
 
         movementDirection.Set(h, v);
+
+        velocity = movementDirection * speed * Time.fixedDeltaTime;
+
+        if (Input.GetButtonDown("Use")) {
+            foreach (GameObject obj in MachineManager.GetInstance().machines) {
+                float xDelta = Mathf.Abs(obj.transform.position.x - this.transform.position.x);
+                float yDelta = Mathf.Abs(obj.transform.position.y - this.transform.position.y);
+                float distance = Mathf.Sqrt(xDelta * xDelta + yDelta * yDelta);
+                if (distance < 1.0f) {
+                    obj.GetComponent<MachineScript>().ToggleMachineFunction();
+                }
+            }
+        }
         //movementDirection = movementDirection.normalized;
     }
 
@@ -35,7 +52,9 @@ public class PlayerController : MonoBehaviour {
     void FixedUpdate() {
         //Debug.Log("force: " + movementDirection * speed);
         //rb.AddForce(movementDirection * speed);
-        rb.MovePosition(rb.position + movementDirection * speed * Time.fixedDeltaTime);
+
+        rb.MovePosition(rb.position + velocity);
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {

@@ -12,16 +12,16 @@ public class BlinkingLightEffect : MonoBehaviour {
     private float elapsed;
     private float colorElapsed;
 
-    private float baseRangeOffset;
-    private float rangeScaleOffset;
-    private float phaseOffset;
+    private float baseRangeOffset = 0.0f;
+    private float rangeScaleOffset = 1.0f;
+    private float phaseOffset = 1.0f;
 
     void Start() {
         light = GetComponent<Light>();
         baseRangeOffset = Random.Range(-0.1f, 0.1f);
         baseRangeOffset = -1.0f;
-        rangeScaleOffset = Random.Range(0.4f, 0.6f);
-        phaseOffset = Random.Range(0.25f, 0.5f);
+        //rangeScaleOffset = Random.Range(0.4f, 0.6f);
+        //phaseOffset = Random.Range(0.25f, 0.5f);
 
         Debug.Log(transform.name + ": " + baseRangeOffset + ", " + rangeScaleOffset + ", " + phaseOffset);
     }
@@ -31,7 +31,7 @@ public class BlinkingLightEffect : MonoBehaviour {
         elapsed += Time.deltaTime;
         colorElapsed += Time.deltaTime;
 
-        light.range = baseRange + baseRangeOffset + rangeScaleOffset * Mathf.Sin(phaseOffset * Mathf.PI * elapsed / 2.0f);
+        light.range = baseRange + baseRangeOffset + rangeScaleOffset * Mathf.Sin(phaseOffset * Mathf.PI * elapsed);
         light.color = Color.Lerp(baseColor, nextColor, colorElapsed);
 
         if (colorElapsed >= 1.0f) {
