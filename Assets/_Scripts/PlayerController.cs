@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour {
                 float yDelta = Mathf.Abs(obj.transform.position.y - this.transform.position.y);
                 float distance = Mathf.Sqrt(xDelta * xDelta + yDelta * yDelta);
                 if (distance < 1.0f) {
+                    //obj.BroadcastMessage("ToggleMachineFunction", SendMessageOptions.DontRequireReceiver);
                     obj.GetComponent<MachineScript>().ToggleMachineFunction();
                 }
             }
