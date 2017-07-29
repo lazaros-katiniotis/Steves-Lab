@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +7,14 @@ public class PlayerController : MonoBehaviour {
 
     private Rigidbody2D rb;
     public float speed = 5f;
+    public GameObject inventory;
+
+    private InventoryManager inventoryManager;
 
     // Use this for initialization
     void Start() {
         rb = GetComponent<Rigidbody2D>();
+        inventoryManager = inventory.GetComponent<InventoryManager>();
     }
 
     private Vector2 movementDirection;
@@ -21,6 +26,10 @@ public class PlayerController : MonoBehaviour {
 
         movementDirection.Set(h, v);
         //movementDirection = movementDirection.normalized;
+    }
+
+    public InventoryManager GetInventoryManager() {
+        return inventoryManager;
     }
 
     void FixedUpdate() {
