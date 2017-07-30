@@ -13,18 +13,17 @@ public class RoomScript : MonoBehaviour {
 
     public Transform floorTiles;
 
-    public List<OxygenVentScript> oxygenVents;
+    public List<AirVentScript> oxygenVents;
 
     private float oxygenationPercentage;
 
     // Use this for initialization
     void Start() {
         floorCount = floorTiles.childCount;
-        oxygenMultiplier = 0.75f;
+        oxygenMultiplier = 1.0f;
         oxygenMax = oxygenMultiplier * floorCount;
         oxygenLevel = oxygenMax;
         CalculateOxygenationPercentage();
-        Debug.Log("Floor count: " + floorCount);
     }
 
     private float elapsed;
@@ -38,11 +37,11 @@ public class RoomScript : MonoBehaviour {
             oxygenLevel -= Time.deltaTime * (1 - oxygenationPercentage);
         }
 
-        elapsed += Time.deltaTime;
-        if (elapsed > 1.0f) {
-            Debug.Log("OxygenationPercentage: " + oxygenationPercentage + ", oxygen Level: " + oxygenLevel);
-            elapsed -= 1.0f;
-        }
+        //elapsed += Time.deltaTime;
+        //if (elapsed > 1.0f) {
+        //    Debug.Log("OxygenationPercentage: " + oxygenationPercentage + ", oxygen Level: " + oxygenLevel);
+        //    elapsed -= 1.0f;
+        //}
 
         if (oxygenLevel > oxygenMax) {
             oxygenLevel = oxygenMax;
@@ -70,7 +69,7 @@ public class RoomScript : MonoBehaviour {
             return;
         }
 
-        foreach (OxygenVentScript vent in oxygenVents) {
+        foreach (AirVentScript vent in oxygenVents) {
             if (vent.IsActivated()) {
                 activatedVents++;
             }

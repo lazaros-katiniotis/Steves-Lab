@@ -6,25 +6,26 @@ using UnityEngine;
 public abstract class MachineScript : MonoBehaviour {
 
     public List<TogglableObject> affectedObjects;
+    public bool activated = false;
+    private float elapsed;
+    public float duration = 30.0f;
 
     void Start() {
-
+        activated = false;
     }
 
-    void Update() {
-
+    protected void Update() {
+        if (activated) {
+            elapsed += Time.deltaTime;
+            if (elapsed > duration) {
+                elapsed -= duration;
+                if (activated) {
+                    ToggleMachineFunction();
+                }
+                activated = false;
+            }
+        }
     }
-
-    //public void ToggleMachineFunction() {
-    //    Debug.Log("Machine function togled!");
-    //    //foreach (GameObject obj in affectedObjects) {
-    //    //    obj.SetActive(!obj.activeSelf);
-    //    //}
-
-    //    //StartCoroutine()
-
-    //    StartCoroutine("")
-    //}
 
     public abstract void ToggleMachineFunction();
 

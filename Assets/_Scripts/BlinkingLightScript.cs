@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlinkingLightScript : TogglableObject {
+public class BlinkingLightScript : MonoBehaviour {
 
     public float baseRange;
     public Color baseColor;
@@ -18,7 +19,7 @@ public class BlinkingLightScript : TogglableObject {
 
     void Start() {
         light = GetComponent<Light>();
-        baseRangeOffset = Random.Range(-0.1f, 0.1f);
+        baseRangeOffset = UnityEngine.Random.Range(-0.1f, 0.1f);
         baseRangeOffset = -1.0f;
         //rangeScaleOffset = Random.Range(0.4f, 0.6f);
         //phaseOffset = Random.Range(0.25f, 0.5f);
@@ -40,5 +41,9 @@ public class BlinkingLightScript : TogglableObject {
             nextColor = tempColor;
             colorElapsed = 0.0f;
         }
+    }
+
+    public void ToggleLight() {
+        light.enabled = !light.enabled;
     }
 }

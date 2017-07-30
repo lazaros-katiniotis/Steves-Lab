@@ -17,7 +17,7 @@ public class OxygenMachineScript : MachineScript {
 
     public override void ToggleMachineFunction() {
         foreach (TogglableObject obj in affectedObjects) {
-            OxygenVentScript vent = obj.GetComponent<OxygenVentScript>();
+            AirVentScript vent = obj.GetComponent<AirVentScript>();
 
         }
     }

@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour {
 
     public List<GameObject> machines;
     public PlayerController player;
+    public Transform currentLevelTransform;
+    public Transform canvasTransform;
     private static GameManager instance;
 
     void Start() {
@@ -19,6 +21,14 @@ public class GameManager : MonoBehaviour {
 
     void Update() {
 
+    }
+
+    public void GameOver(Camera mainCamera) {
+        this.transform.SetParent(null);
+        mainCamera.transform.SetParent(this.transform);
+        mainCamera.enabled = true;
+        currentLevelTransform.gameObject.SetActive(false);
+        canvasTransform.DetachChildren();
     }
 
     public static GameManager GetInstance() {
