@@ -218,6 +218,9 @@ public class PlayerController : MonoBehaviour {
     }
 
     void FixedUpdate() {
+        if (dead) {
+            return;
+        }
         //Debug.Log("force: " + movementDirection * speed);
         //rb.AddForce(movementDirection * speed);
 
