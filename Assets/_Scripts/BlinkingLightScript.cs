@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class BlinkingLightScript : MonoBehaviour {
 
-    public float baseRange;
     public Color baseColor;
     public Color nextColor;
 
@@ -13,14 +12,22 @@ public class BlinkingLightScript : MonoBehaviour {
     private float elapsed;
     private float colorElapsed;
 
-    private float baseRangeOffset = 0.0f;
-    private float rangeScaleOffset = 1.0f;
-    private float phaseOffset = 1.0f;
+    public Vector2 baseRangeOffset;
+    public float rangeScaleOffset = 1.0f;
+    public float phaseOffset = 1.0f;
+
+    private float baseRange;
+    private float offset;
+
+    [Range(1.0f, 3.0f)]
+    public float blinkSpeed;
 
     void Start() {
         light = GetComponent<Light>();
-        baseRangeOffset = UnityEngine.Random.Range(-0.1f, 0.1f);
-        baseRangeOffset = -1.0f;
+        baseRange = light.range;
+        offset = UnityEngine.Random.Range(baseRangeOffset.x, baseRangeOffset.y);
+
+        //baseRangeOffset = -1.0f;
         //rangeScaleOffset = Random.Range(0.4f, 0.6f);
         //phaseOffset = Random.Range(0.25f, 0.5f);
 
@@ -32,7 +39,7 @@ public class BlinkingLightScript : MonoBehaviour {
         elapsed += Time.deltaTime;
         colorElapsed += Time.deltaTime;
 
-        light.range = baseRange + baseRangeOffset + rangeScaleOffset * Mathf.Sin(phaseOffset * Mathf.PI * elapsed);
+        light.range = (baseRange + offset) + rangeScaleOffset * Mathf.Sin(phaseOffset * Mathf.PI * elapsed / blinkSpeed);
         light.color = Color.Lerp(baseColor, nextColor, colorElapsed);
 
         if (colorElapsed >= 1.0f) {
@@ -45,5 +52,19 @@ public class BlinkingLightScript : MonoBehaviour {
 
     public void ToggleLight() {
         light.enabled = !light.enabled;
+    }
+
+    public void TurnOff() {
+        if (light == null) {
+            light = GetComponent<Light>();
+        }
+        light.enabled = false;
+    }
+
+    public void TurnOn() {
+        if (light == null) {
+            light = GetComponent<Light>();
+        }
+        light.enabled = true;
     }
 }

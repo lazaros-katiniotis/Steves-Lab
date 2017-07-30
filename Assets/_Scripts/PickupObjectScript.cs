@@ -48,7 +48,7 @@ public class PickupObjectScript : MonoBehaviour {
         if (collision.gameObject.tag.Equals("Player")) {
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
             audioSource.Play();
-            player.GetInventoryManager().AddItem(this.gameObject);
+            player.GetInventory().AddItem(type);
             spriteTransform.gameObject.SetActive(false);
             GetComponent<Collider2D>().enabled = false;
             StartCoroutine(RemoveFromScene());

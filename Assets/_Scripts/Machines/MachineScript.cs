@@ -20,13 +20,13 @@ public abstract class MachineScript : MonoBehaviour {
             if (elapsed > duration) {
                 elapsed -= duration;
                 if (activated) {
-                    ToggleMachineFunction();
+                    ToggleMachineFunction(null);
                 }
                 activated = false;
             }
         }
     }
 
-    public abstract void ToggleMachineFunction();
+    public abstract void ToggleMachineFunction(PlayerController player);
 
 }

@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour {
                 float yDelta = Mathf.Abs(obj.transform.position.y - this.transform.position.y);
                 float distance = Mathf.Sqrt(xDelta * xDelta + yDelta * yDelta);
                 if (distance < 1.25f) {
-                    obj.GetComponent<MachineScript>().ToggleMachineFunction();
+                    obj.GetComponent<MachineScript>().ToggleMachineFunction(this);
                 }
             }
         }
@@ -213,7 +213,7 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    public InventoryManager GetInventoryManager() {
+    public InventoryManager GetInventory() {
         return inventoryManager;
     }
 

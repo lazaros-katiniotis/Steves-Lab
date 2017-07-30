@@ -2,22 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WallLampScript : TogglableObject {
+public class AirVentScript : TogglableObject {
+
+    public RoomScript room;
 
     private BlinkingLightScript light;
-    private bool activated;
 
     void Start() {
         light = GetComponentInChildren<BlinkingLightScript>();
-        activated = false;
+        TurnOff();
+        if (activeOnStart) {
+            TurnOn();
+        }
     }
 
     void Update() {
 
     }
 
-    public void ToggleLamp() {
+    public bool IsActivated() {
+        return activated;
+    }
+
+    public void ToggleVent() {
         activated = !activated;
         light.ToggleLight();
+        room.CalculateOxygenationPercentage();
     }
 }

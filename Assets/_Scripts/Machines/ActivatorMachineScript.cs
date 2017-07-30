@@ -16,7 +16,7 @@ public class ActivatorMachineScript : MachineScript {
         light.enabled = activated;
     }
 
-    public override void ToggleMachineFunction() {
+    public override void ToggleMachineFunction(PlayerController player) {
         activated = !activated;
         Debug.Log("Machine function togled!");
         foreach (TogglableObject obj in affectedObjects) {

@@ -3,13 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TogglableObject : MonoBehaviour {
+public abstract class TogglableObject : MonoBehaviour {
 
+    public bool activeOnStart;
+    public bool activated;
 
-	void Start () {
+    void Start () {
+
 	}
 
     void Update() {
 
+    }
+
+    public abstract void Toggle();
+
+    public abstract void TurnOn();
+
+    public abstract void TurnOff();
+
+    public bool IsActivated() {
+        return activated;
     }
 }

@@ -17,10 +17,12 @@ public class DoorMachineScript : MachineScript {
 
     }
 
-    public override void ToggleMachineFunction() {
-        Debug.Log("Will unlock door after removing a keycard.");
-        if (doorScript.IsLocked()) {
-            doorScript.Unlock();
+    public override void ToggleMachineFunction(PlayerController player) {
+        if (player.GetInventory().HasItem(PickupObjectScript.PickupObjectType.KEYCARD)) {
+            player.GetInventory().RemoveItem(PickupObjectScript.PickupObjectType.KEYCARD);
+            if (doorScript.IsLocked()) {
+                doorScript.Unlock();
+            }
         }
     }
 
