@@ -20,7 +20,9 @@ public class GameManager : MonoBehaviour {
     }
 
     void Update() {
-
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            AppHelper.Quit();
+        }
     }
 
     public void GameOver(Camera mainCamera) {

@@ -6,6 +6,9 @@ Shader "Custom/DiffuseEdit"
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
+        _BumpMap ("Normal Map", 2D) = "white" {}
+        [Gamma] _Metallic("Metallic", Range(0.0, 1.0)) = 1.0
+        [Gamma] _Smoothness("Smoothness", Range(0.0, 1.0)) = 0.1
         [MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
         [HideInInspector] _RendererColor ("RendererColor", Color) = (1,1,1,1)
         [HideInInspector] _Flip ("Flip", Vector) = (1,1,1,1)
@@ -26,8 +29,8 @@ Shader "Custom/DiffuseEdit"
 
         Cull Off
         Lighting Off
-        ZWrite Off
-        Blend One OneMinusSrcAlpha
+		ZWrite Off
+		Blend SrcAlpha OneMinusSrcAlpha
 
         CGPROGRAM
         #pragma surface surf Lambert vertex:vert nofog nolightmap nodynlightmap keepalpha noinstancing
@@ -35,9 +38,14 @@ Shader "Custom/DiffuseEdit"
         #pragma multi_compile _ ETC1_EXTERNAL_ALPHA
         #include "UnitySprites.cginc"
 
+		sampler2D _BumpMap;
+		half _Metallic;
+		fixed _Smoothness;
+
         struct Input
         {
             float2 uv_MainTex;
+			float2 uv_BumpMap;
             fixed4 color;
         };
 
@@ -57,10 +65,12 @@ Shader "Custom/DiffuseEdit"
         {
             fixed4 c = SampleSpriteTexture (IN.uv_MainTex) * IN.color;
             o.Albedo = c.rgb * c.a;
+
+			//o.Normal = UnpackNormal(tex2D (_BumpMap, IN.uv_BumpMap));
             o.Alpha = c.a;
         }
         ENDCG
     }
 
-Fallback "Transparent/VertexLit"
+Fallback Off
 }

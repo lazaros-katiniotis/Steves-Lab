@@ -24,12 +24,32 @@ public class PlayerController : MonoBehaviour {
     public TextMeshProUGUI playerOxygenText;
     public TextMeshProUGUI playerHpText;
 
+    private Animator animator;
+
+    private Vector2 movementDirection;
+    private Vector2 prevMovementDirection;
+
+    public List<Texture> animationNormals;
+    private Material material;
+    private bool dead = false;
+
+    public enum AnimationState {
+        RUN_UP, RUN_DOWN, RUN_LEFT, RUN_RIGHT, IDLE_UP, IDLE_DOWN, IDLE_LEFT, IDLE_RIGHT, DEATH
+    }
+
+    private AnimationState currentAnimationState;
+    private AnimationState prevAnimationState;
+
     // Use this for initialization
     void Start() {
         rb = GetComponent<Rigidbody2D>();
         inventoryManager = inventory.GetComponent<InventoryManager>();
         //playerHitPoints = 100;
         playerOxygenLevel = 1.0f;
+        animator = GetComponentInChildren<Animator>();
+        material = GetComponentInChildren<Renderer>().material;
+        prevAnimationState = AnimationState.RUN_DOWN;
+        currentAnimationState = AnimationState.RUN_DOWN;
         StartCoroutine(CheckIfDead());
     }
 
@@ -37,19 +57,29 @@ public class PlayerController : MonoBehaviour {
         while (playerHitPoints > 0.0f) {
             yield return null;
         }
-        Destroy(this.gameObject);
+        dead = true;
+        PlayDeathAnimation();
         GameManager.GetInstance().GameOver(GetComponentInChildren<Camera>());
-        Debug.Log("PLAYER IS DEAD!!");
+        yield return null;
+    }
+
+    public void PlayDeathAnimation() {
+        movementDirection = Vector2.zero;
+        rb.velocity = Vector2.zero;
+        animator.Play("PlayerDeath");
+        UpdateMaterialNormal(8);
+
     }
 
     public void SetCurrentRoom(RoomScript room) {
         currentRoom = room;
     }
 
-    private Vector2 movementDirection;
-
     // Update is called once per frame
     void Update() {
+        if (dead) {
+            return;
+        }
         if (currentRoom != null) {
             roomOxygenText.text = "Room Oxygen%: " + currentRoom.GetCurrentOxygenPercent().ToString("F2");
         } else {
@@ -59,13 +89,18 @@ public class PlayerController : MonoBehaviour {
         UpdatePlayerOxygenLevel();
         UpdatePlayerHitPoints();
 
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-
-        movementDirection.Set(h, v);
+        KeyboardInput();
 
         velocity = movementDirection * speed * Time.fixedDeltaTime;
 
+        UpdatePlayerGUI();
+    }
+
+    private float h;
+    private float v;
+    private float previousNormalIndex = 0;
+
+    private void KeyboardInput() {
         if (Input.GetButtonDown("Use")) {
             foreach (GameObject obj in GameManager.GetInstance().machines) {
                 float xDelta = Mathf.Abs(obj.transform.position.x - this.transform.position.x);
@@ -77,8 +112,66 @@ public class PlayerController : MonoBehaviour {
             }
         }
 
-        UpdatePlayerGUI();
-        //movementDirection = movementDirection.normalized;
+        h = Input.GetAxisRaw("Horizontal");
+        v = Input.GetAxisRaw("Vertical");
+
+        movementDirection.Set(h, v);
+
+        UpdateAnimation();
+
+        prevAnimationState = currentAnimationState;
+        prevMovementDirection = movementDirection;
+    }
+
+    private void UpdateAnimation() {
+        if (h == 1 && v == 0) {
+            animator.Play("PlayerRunRight");
+            currentAnimationState = AnimationState.RUN_RIGHT;
+            UpdateMaterialNormal(3);
+        } else if (h == -1 && v == 0) {
+            animator.Play("PlayerRunLeft");
+            currentAnimationState = AnimationState.RUN_LEFT;
+            UpdateMaterialNormal(1);
+        } else if (v == 1) {
+            animator.Play("PlayerRunUp");
+            currentAnimationState = AnimationState.RUN_UP;
+            UpdateMaterialNormal(0);
+        } else if (v == -1) {
+            animator.Play("PlayerRunDown");
+            currentAnimationState = AnimationState.RUN_DOWN;
+            UpdateMaterialNormal(2);
+        }
+
+        if (movementDirection.Equals(Vector2.zero)) {
+            switch (prevAnimationState) {
+                case AnimationState.RUN_UP:
+                animator.Play("PlayerIdleUp");
+                UpdateMaterialNormal(4);
+                break;
+                case AnimationState.RUN_LEFT:
+                animator.Play("PlayerIdleLeft");
+                UpdateMaterialNormal(5);
+                break;
+                case AnimationState.RUN_DOWN:
+                animator.Play("PlayerIdleDown");
+                UpdateMaterialNormal(6);
+                break;
+                case AnimationState.RUN_RIGHT:
+                animator.Play("PlayerIdleRight");
+                UpdateMaterialNormal(7);
+                break;
+                default:
+                break;
+            }
+        }
+    }
+
+    private void UpdateMaterialNormal(int index) {
+        if (previousNormalIndex.Equals(index)) {
+            return;
+        }
+        material.SetTexture("_BumpMap", animationNormals[index]);
+        previousNormalIndex = index;
     }
 
     public void UpdatePlayerOxygenLevel() {
@@ -115,6 +208,8 @@ public class PlayerController : MonoBehaviour {
                 playerHitPoints -= 5;
                 oxygenDamageElapsed -= 1.0f;
             }
+        } else {
+            oxygenDamageElapsed = 0.0f;
         }
     }
 
