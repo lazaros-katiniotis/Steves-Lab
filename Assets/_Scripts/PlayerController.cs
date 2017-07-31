@@ -54,8 +54,8 @@ public class PlayerController : MonoBehaviour {
     }
 
     public void DisableBars() {
-        healthBar.enabled = false;
-        oxygenBar.enabled = false;
+        healthBar.gameObject.SetActive(false);
+        oxygenBar.gameObject.SetActive(false);
     }
 
     public void ReplenishHealth(float value) {
@@ -252,6 +252,9 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    public bool IsDead() {
+        return (playerHitPoints == 0);
+    }
 
     public InventoryManager GetInventory() {
         return inventoryManager;

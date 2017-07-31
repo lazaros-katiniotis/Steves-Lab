@@ -9,7 +9,14 @@ public class GameManager : MonoBehaviour {
     public PlayerController player;
     public Transform currentLevelTransform;
     public Transform canvasTransform;
+    public GameObject gameOverBanner;
+    private string currentScene;
+
     public TextMeshProUGUI restartMessage;
+    private bool displayRestartMessage;
+    private Color startColor;
+    private Color endColor;
+    private float elapsed = 0.0f;
 
     private List<MachineScript> machines;
 
@@ -23,7 +30,15 @@ public class GameManager : MonoBehaviour {
             return;
         }
 
+        currentScene = "test";
+
+        startColor = restartMessage.color;
+        endColor = new Color(startColor.r, startColor.g, startColor.b, 1.0f);
         InitCurrentLevel();
+    }
+
+    private void Awake() {
+        DontDestroyOnLoad(this.gameObject);
     }
 
     private void InitCurrentLevel() {
@@ -40,9 +55,24 @@ public class GameManager : MonoBehaviour {
         machines.Add(machineScript);
     }
 
+    private Vector2 startPos;
+
     void Update() {
         if (Input.GetKeyDown(KeyCode.Escape)) {
             AppHelper.Quit();
+        }
+        if (player.IsDead()) {
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                UnityEngine.SceneManagement.SceneManager.LoadScene(currentScene);
+            }
+        }
+        if (displayRestartMessage) {
+            elapsed += Time.deltaTime;
+            Vector2 finalPos;
+            finalPos.x = gameOverBanner.transform.position.x;
+            finalPos.y = gameOverBanner.transform.position.y - 6;
+            gameOverBanner.transform.position = Vector2.Lerp(startPos, finalPos, elapsed * elapsed);
+            restartMessage.color = Color.Lerp(startColor, endColor, elapsed * 1.5f);
         }
     }
 
@@ -50,27 +80,21 @@ public class GameManager : MonoBehaviour {
         this.transform.SetParent(null);
         //mainCamera.transform.SetParent(this.transform);
         //mainCamera.enabled = true;
-        StartCoroutine(DisplayRestartMessage());
+        StartCoroutine(GameOverAnimations());
         player.transform.SetParent(null);
         player.DisableBars();
         currentLevelTransform.gameObject.SetActive(false);
-        canvasTransform.DetachChildren();
+        //canvasTransform.DetachChildren();
     }
 
-    private Color restartMessageColor = new Color(1, 1, 1, 1);
-
-    private IEnumerator DisplayRestartMessage() {
+    private IEnumerator GameOverAnimations() {
         float elapsed = 0.0f;
-        while (elapsed < 2.0f) {
+        while (elapsed < 1.5f) {
             elapsed += Time.deltaTime;
             yield return null;
         }
-        elapsed = 0.0f;
-        while (elapsed < 2.0f) {
-            restartMessage.color = Color.Lerp(restartMessage.color, restartMessageColor, elapsed);
-            yield return null;
-        }
-        //restartMessage.CrossFadeColor(new Color(1, 1, 1, 0), 2.0f, true, true);
+        startPos = gameOverBanner.transform.position;
+        displayRestartMessage = true;
         yield return null;
 
     }
