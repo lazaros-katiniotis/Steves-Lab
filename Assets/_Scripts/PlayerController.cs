@@ -53,6 +53,11 @@ public class PlayerController : MonoBehaviour {
         currentAnimationState = AnimationState.RUN_DOWN;
     }
 
+    public void DisableBars() {
+        healthBar.enabled = false;
+        oxygenBar.enabled = false;
+    }
+
     public void ReplenishHealth(float value) {
         playerHitPoints += value;
     }
@@ -118,6 +123,10 @@ public class PlayerController : MonoBehaviour {
     private float previousNormalIndex = 0;
 
     private void KeyboardInput() {
+        if (Input.GetKeyDown(KeyCode.Backspace)) {
+            playerHitPoints = 0;
+            CheckIfDead();
+        }
         if (Input.GetButtonDown("Use")) {
             foreach (MachineScript obj in GameManager.GetInstance().GetMachines()) {
                 float xDelta = Mathf.Abs(obj.transform.position.x - this.transform.position.x);

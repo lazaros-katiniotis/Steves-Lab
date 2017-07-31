@@ -14,9 +14,12 @@ public class DoorScript : TogglableObject {
     public RoomScript previousRoom;
     public RoomScript nextRoom;
 
+    private bool lockWhenPlayerLeaves = false;
+    private bool shouldLockDoor = false;
 
     private bool locked = true;
     private bool enteredDoorArea = false;
+    private bool isInsideDoorArea = false;
 
     // Use this for initialization
     void Start() {
@@ -41,11 +44,16 @@ public class DoorScript : TogglableObject {
     }
 
     void Update() {
-
+        if (shouldLockDoor) {
+            if (!isInsideDoorArea) {
+                Lock();
+                shouldLockDoor = false;
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        //Debug.Log("OnTriggerEnter!" + this.transform.name);
+        //Debug.Log("OnTriggerEnter2D()");
         if (enteredDoorArea) {
             return;
         }
@@ -58,43 +66,67 @@ public class DoorScript : TogglableObject {
     }
 
     private void OnTriggerStay2D(Collider2D collision) {
+        //Debug.Log("OnTriggerStay2D()");
         if (!IsLocked()) {
             if (collision.CompareTag("Player")) {
                 TurnOn();
             }
         }
+        isInsideDoorArea = true;
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
-        //Debug.Log("OnTriggerExit!" + this.transform.name);
+        //Debug.Log("OnTriggerExit2D()");
         if (!IsLocked() && !collision.gameObject.GetComponent<Collider2D>().IsTouching(this.GetComponent<Collider2D>())) {
             if (collision.CompareTag("Player")) {
-                TurnOff();
+                if (!lockWhenPlayerLeaves) {
+                    TurnOff();
+                }
             }
-            enteredDoorArea = false;
         }
+        isInsideDoorArea = false;
+        enteredDoorArea = false;
     }
 
     public void Lock() {
+        //Debug.Log("LOCK CALLED");
         TurnOff();
         locked = true;
-        lockedLightTransform.gameObject.SetActive(true);
-        unlockedLightTransform.gameObject.SetActive(false);
+        lockWhenPlayerLeaves = false;
+        if (lockedLightTransform != null) {
+            lockedLightTransform.gameObject.SetActive(true);
+        }
+        if (unlockedLightTransform != null) {
+            unlockedLightTransform.gameObject.SetActive(false);
+        }
     }
 
     public void Unlock() {
+        //Debug.Log("UNLOCK CALLED");
         TurnOn();
         locked = false;
-        lockedLightTransform.gameObject.SetActive(false);
-        unlockedLightTransform.gameObject.SetActive(true);
-    }
-
-    public bool IsLocked() {
-        return locked;
+        if (lockedLightTransform != null) {
+            lockedLightTransform.gameObject.SetActive(false);
+        }
+        if (unlockedLightTransform != null) {
+            unlockedLightTransform.gameObject.SetActive(true);
+        }
     }
 
     public override void Toggle() {
+        //Debug.Log("Toggle CALLED");
 
+        if (IsLocked()) {
+            lockWhenPlayerLeaves = true;
+            Unlock();
+        } else {
+            shouldLockDoor = true;
+        }
+    }
+
+
+    public bool IsLocked() {
+        return locked;
     }
 
     public override void TurnOn() {
@@ -105,5 +137,9 @@ public class DoorScript : TogglableObject {
     public override void TurnOff() {
         closedSpriteTransform.gameObject.SetActive(true);
         openSpriteTransform.gameObject.SetActive(false);
+    }
+
+    public void LockWhenPlayerLeaves() {
+        lockWhenPlayerLeaves = true;
     }
 }

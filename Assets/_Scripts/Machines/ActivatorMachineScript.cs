@@ -51,6 +51,10 @@ public class ActivatorMachineScript : MachineScript {
     public override void TurnOn() {
         activated = true;
         foreach (TogglableObject obj in affectedObjects) {
+            Debug.Log(obj.transform.name);
+            if (obj.GetType().Equals(typeof(DoorScript))) {
+                ((DoorScript)obj).Unlock();
+            }
             obj.TurnOn();
         }
     }
