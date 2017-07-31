@@ -14,13 +14,15 @@ public class GameManager : MonoBehaviour {
 
     public TextMeshProUGUI restartMessage;
     private bool displayRestartMessage;
+    private bool displayGameOverBanner;
     private Color startColor;
     private Color endColor;
-    private float elapsed = 0.0f;
+    private float messageElapsed = 0.0f;
+    private float bannerElapsed = 0.0f;
 
     private List<MachineScript> machines;
-
     private static GameManager instance;
+    private Vector2 startPos;
 
     void Start() {
         if (instance == null) {
@@ -32,17 +34,19 @@ public class GameManager : MonoBehaviour {
 
         currentScene = "test";
 
-        startColor = restartMessage.color;
-        endColor = new Color(startColor.r, startColor.g, startColor.b, 1.0f);
         InitCurrentLevel();
     }
 
     private void Awake() {
-        DontDestroyOnLoad(this.gameObject);
+        //DontDestroyOnLoad(this.gameObject);
     }
 
     private void InitCurrentLevel() {
         machines = new List<MachineScript>();
+        startColor = restartMessage.color;
+        endColor = new Color(startColor.r, startColor.g, startColor.b, 1.0f);
+        displayRestartMessage = false;
+        displayGameOverBanner = false;
     }
 
     public void AddMachine(DoorScript doorScript) {
@@ -55,8 +59,6 @@ public class GameManager : MonoBehaviour {
         machines.Add(machineScript);
     }
 
-    private Vector2 startPos;
-
     void Update() {
         if (Input.GetKeyDown(KeyCode.Escape)) {
             AppHelper.Quit();
@@ -66,13 +68,14 @@ public class GameManager : MonoBehaviour {
                 UnityEngine.SceneManagement.SceneManager.LoadScene(currentScene);
             }
         }
+        if (displayGameOverBanner) {
+            bannerElapsed += Time.deltaTime;
+            Vector2 finalPos = player.transform.position;
+            gameOverBanner.transform.position = Vector2.Lerp(startPos, finalPos, bannerElapsed * bannerElapsed);
+        }
         if (displayRestartMessage) {
-            elapsed += Time.deltaTime;
-            Vector2 finalPos;
-            finalPos.x = gameOverBanner.transform.position.x;
-            finalPos.y = gameOverBanner.transform.position.y - 6;
-            gameOverBanner.transform.position = Vector2.Lerp(startPos, finalPos, elapsed * elapsed);
-            restartMessage.color = Color.Lerp(startColor, endColor, elapsed * 1.5f);
+            messageElapsed += Time.deltaTime;
+            restartMessage.color = Color.Lerp(startColor, endColor, messageElapsed * 1.5f);
         }
     }
 
@@ -83,17 +86,21 @@ public class GameManager : MonoBehaviour {
         StartCoroutine(GameOverAnimations());
         player.transform.SetParent(null);
         player.DisableBars();
+        gameOverBanner.SetActive(true);
         currentLevelTransform.gameObject.SetActive(false);
         //canvasTransform.DetachChildren();
     }
 
     private IEnumerator GameOverAnimations() {
         float elapsed = 0.0f;
-        while (elapsed < 1.5f) {
+        while (elapsed < 1.7f) {
+            if (elapsed > 1.25f) {
+                startPos = gameOverBanner.transform.position;
+                displayGameOverBanner = true;
+            }
             elapsed += Time.deltaTime;
             yield return null;
         }
-        startPos = gameOverBanner.transform.position;
         displayRestartMessage = true;
         yield return null;
 
