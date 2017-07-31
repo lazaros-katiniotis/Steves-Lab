@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour {
     void Start() {
         rb = GetComponent<Rigidbody2D>();
         inventoryManager = inventory.GetComponent<InventoryManager>();
-        playerHitPoints = playerMaxHitPoints;
+        playerHitPoints = playerMaxHitPoints - 10.0f;
         playerOxygenLevel = 1.0f;
         animator = GetComponentInChildren<Animator>();
         material = GetComponentInChildren<Renderer>().material;
