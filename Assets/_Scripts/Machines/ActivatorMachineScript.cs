@@ -7,30 +7,58 @@ public class ActivatorMachineScript : MachineScript {
 
     private Light light;
 
-    private void Start() {
+    void Start() {
         light = GetComponentInChildren<Light>();
     }
 
-    private void Update() {
+    void Update() {
         base.Update();
         light.enabled = activated;
     }
 
-    public override void ToggleMachineFunction(PlayerController player) {
+    protected override void ToggleMachineFunction(PlayerController player) {
         activated = !activated;
-        Debug.Log("Machine function togled!");
         foreach (TogglableObject obj in affectedObjects) {
-            Type type = obj.GetType();
-            if (obj.GetType() == typeof(WallLampScript)) {
-                //obj.gameObject.SetActive(!obj.gameObject.activeSelf);
-                WallLampScript lamp = obj.GetComponent<WallLampScript>();
-                lamp.ToggleLamp();
-            } else if (obj.GetType() == typeof(AirVentScript)) {
-                AirVentScript vent = obj.GetComponent<AirVentScript>();
-                vent.ToggleVent();
-                Debug.Log("Vent: " + vent.transform.name + " is activated:" + vent.IsActivated());
-            }
+            obj.Toggle();
+        }
+
+        /*
+        //Debug.Log("Machine function togled!");
+        foreach (TogglableObject obj in affectedObjects) {
+        Type type = obj.GetType();
+        if (obj.GetType() == typeof(WallLampScript)) {
+        //obj.gameObject.SetActive(!obj.gameObject.activeSelf);
+        WallLampScript lamp = obj.GetComponent<WallLampScript>();
+        lamp.Toggle();
+        } else if (obj.GetType() == typeof(AirVentScript)) {
+        AirVentScript vent = obj.GetComponent<AirVentScript>();
+        vent.Toggle();
+        Debug.Log("Vent: " + vent.transform.name + " is activated:" + vent.IsActivated());
+        }
+        }
+        */
+    }
+
+    public override void Toggle() {
+        if (firstTimeActivated) {
+            TurnOn();
+            firstTimeActivated = false;
+        } else {
+            ToggleMachineFunction(GameManager.GetInstance().player);
         }
     }
 
+    public override void TurnOn() {
+        activated = true;
+        foreach (TogglableObject obj in affectedObjects) {
+            obj.TurnOn();
+        }
+    }
+
+    public override void TurnOff() {
+        activated = false;
+        foreach (TogglableObject obj in affectedObjects) {
+            obj.TurnOff();
+        }
+    }
 }

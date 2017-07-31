@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour {
         }
         dead = true;
         PlayDeathAnimation();
-        GameManager.GetInstance().GameOver(GetComponentInChildren<Camera>());
+        GameManager.GetInstance().GameOver();
         yield return null;
     }
 
@@ -102,12 +102,12 @@ public class PlayerController : MonoBehaviour {
 
     private void KeyboardInput() {
         if (Input.GetButtonDown("Use")) {
-            foreach (GameObject obj in GameManager.GetInstance().machines) {
+            foreach (MachineScript obj in GameManager.GetInstance().GetMachines()) {
                 float xDelta = Mathf.Abs(obj.transform.position.x - this.transform.position.x);
                 float yDelta = Mathf.Abs(obj.transform.position.y - this.transform.position.y);
                 float distance = Mathf.Sqrt(xDelta * xDelta + yDelta * yDelta);
-                if (distance < 1.25f) {
-                    obj.GetComponent<MachineScript>().ToggleMachineFunction(this);
+                if (distance < 1.0f) {
+                    obj.Toggle();
                 }
             }
         }

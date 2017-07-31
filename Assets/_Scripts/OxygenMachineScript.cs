@@ -15,10 +15,22 @@ public class OxygenMachineScript : MachineScript {
 
     }
 
-    public override void ToggleMachineFunction(PlayerController player) {
+    protected override void ToggleMachineFunction(PlayerController player) {
         foreach (TogglableObject obj in affectedObjects) {
             AirVentScript vent = obj.GetComponent<AirVentScript>();
 
         }
+    }
+
+    public override void Toggle() {
+        ToggleMachineFunction(GameManager.GetInstance().player);
+    }
+
+    public override void TurnOn() {
+
+    }
+
+    public override void TurnOff() {
+
     }
 }

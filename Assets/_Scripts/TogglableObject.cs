@@ -6,11 +6,12 @@ using UnityEngine;
 public abstract class TogglableObject : MonoBehaviour {
 
     public bool activeOnStart;
-    public bool activated;
+    protected bool activated;
+    protected bool firstTimeActivated;
 
-    void Start () {
-
-	}
+    void Start() {
+        firstTimeActivated = false;
+    }
 
     void Update() {
 

@@ -17,13 +17,28 @@ public class DoorMachineScript : MachineScript {
 
     }
 
-    public override void ToggleMachineFunction(PlayerController player) {
-        if (player.GetInventory().HasItem(PickupObjectScript.PickupObjectType.KEYCARD)) {
-            player.GetInventory().RemoveItem(PickupObjectScript.PickupObjectType.KEYCARD);
-            if (doorScript.IsLocked()) {
+    protected override void ToggleMachineFunction(PlayerController player) {
+        Debug.Log("DOOR MACHINE TOGGLE FUNCTION!");
+        if (doorScript.IsLocked()) {
+            if (player.GetInventory().HasItem(PickupObjectScript.PickupObjectType.KEYCARD)) {
+                player.GetInventory().RemoveItem(PickupObjectScript.PickupObjectType.KEYCARD);
                 doorScript.Unlock();
             }
+        } else {
+            player.GetInventory().AddItem(PickupObjectScript.PickupObjectType.KEYCARD);
+            doorScript.Lock();
         }
     }
 
+    public override void Toggle() {
+        ToggleMachineFunction(GameManager.GetInstance().player);
+    }
+
+    public override void TurnOn() {
+
+    }
+
+    public override void TurnOff() {
+
+    }
 }

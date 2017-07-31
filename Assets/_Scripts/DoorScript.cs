@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorScript : MonoBehaviour {
+public class DoorScript : TogglableObject {
 
+    public MachineScript terminal;
     public Transform closedSpriteTransform;
     public Transform openSpriteTransform;
     public Transform lockedLightTransform;
@@ -13,13 +14,17 @@ public class DoorScript : MonoBehaviour {
     public RoomScript previousRoom;
     public RoomScript nextRoom;
 
+
     private bool locked = true;
     private bool enteredDoorArea = false;
 
     // Use this for initialization
     void Start() {
-        CloseDoor();
-        locked = true;
+        Lock();
+        if (activeOnStart) {
+            Unlock();
+            TurnOff();
+        }
     }
 
     public RoomScript GetNextRoom() {
@@ -31,18 +36,22 @@ public class DoorScript : MonoBehaviour {
         return previousRoom;
     }
 
+    public MachineScript GetTerminal() {
+        return terminal;
+    }
+
     void Update() {
 
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        Debug.Log("OnTriggerEnter!" + this.transform.name);
+        //Debug.Log("OnTriggerEnter!" + this.transform.name);
         if (enteredDoorArea) {
             return;
         }
         if (!IsLocked() && !enteredDoorArea) {
             if (collision.CompareTag("Player")) {
-                OpenDoor();
+                TurnOn();
             }
         }
         enteredDoorArea = true;
@@ -51,46 +60,50 @@ public class DoorScript : MonoBehaviour {
     private void OnTriggerStay2D(Collider2D collision) {
         if (!IsLocked()) {
             if (collision.CompareTag("Player")) {
-                OpenDoor();
+                TurnOn();
             }
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
-        Debug.Log("OnTriggerExit!" + this.transform.name);
+        //Debug.Log("OnTriggerExit!" + this.transform.name);
         if (!IsLocked() && !collision.gameObject.GetComponent<Collider2D>().IsTouching(this.GetComponent<Collider2D>())) {
             if (collision.CompareTag("Player")) {
-                CloseDoor();
+                TurnOff();
             }
             enteredDoorArea = false;
         }
     }
 
     public void Lock() {
-        CloseDoor();
+        TurnOff();
         locked = true;
         lockedLightTransform.gameObject.SetActive(true);
         unlockedLightTransform.gameObject.SetActive(false);
     }
 
     public void Unlock() {
-        OpenDoor();
+        TurnOn();
         locked = false;
         lockedLightTransform.gameObject.SetActive(false);
         unlockedLightTransform.gameObject.SetActive(true);
     }
 
-    public void OpenDoor() {
+    public bool IsLocked() {
+        return locked;
+    }
+
+    public override void Toggle() {
+
+    }
+
+    public override void TurnOn() {
         closedSpriteTransform.gameObject.SetActive(false);
         openSpriteTransform.gameObject.SetActive(true);
     }
 
-    public void CloseDoor() {
+    public override void TurnOff() {
         closedSpriteTransform.gameObject.SetActive(true);
         openSpriteTransform.gameObject.SetActive(false);
-    }
-
-    public bool IsLocked() {
-        return locked;
     }
 }

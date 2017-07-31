@@ -5,13 +5,12 @@ using UnityEngine;
 public class WallLampScript : TogglableObject {
 
     private BlinkingLightScript light;
-    private bool activated;
 
     void Start() {
         light = GetComponentInChildren<BlinkingLightScript>();
-        TurnOffLamp();
+        TurnOff();
         if (activeOnStart) {
-            TurnOnLamp();
+            TurnOn();
         }
     }
 
@@ -19,17 +18,17 @@ public class WallLampScript : TogglableObject {
 
     }
 
-    public void ToggleLamp() {
+    public override void Toggle() {
         activated = !activated;
         light.ToggleLight();
     }
 
-    public void TurnOffLamp() {
+    public override void TurnOff() {
         light.TurnOff();
         activated = false;
     }
 
-    public void TurnOnLamp() {
+    public override void TurnOn() {
         light.TurnOn();
         activated = true;
     }

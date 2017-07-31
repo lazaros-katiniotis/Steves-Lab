@@ -11,18 +11,27 @@ public class RoomScript : MonoBehaviour {
     private float oxygenMultiplier;
     private int floorCount;
 
-    public Transform floorTiles;
+    public Transform floorTilesTransform;
+    public Transform airVentTransform;
+    public Transform machinesTransform;
+    public Transform doorsTransform;
 
-    public List<AirVentScript> oxygenVents;
+    private List<AirVentScript> oxygenVents;
 
     private float oxygenationPercentage;
 
     // Use this for initialization
     void Start() {
-        floorCount = floorTiles.childCount;
+        floorCount = floorTilesTransform.childCount;
         oxygenMultiplier = 1.0f;
         oxygenMax = oxygenMultiplier * floorCount;
         oxygenLevel = oxygenMax;
+        oxygenVents = new List<AirVentScript>();
+
+        for (int i = 0; i < airVentTransform.childCount; i++) {
+            oxygenVents.Add(airVentTransform.GetChild(i).GetComponent<AirVentScript>());
+        }
+
         CalculateOxygenationPercentage();
     }
 
@@ -62,7 +71,11 @@ public class RoomScript : MonoBehaviour {
 
     public void CalculateOxygenationPercentage() {
         int activatedVents = 0;
-        float totalVents = oxygenVents.Count;
+        float totalVents = 0;
+
+        if (oxygenVents != null) {
+            totalVents = oxygenVents.Count;
+        }
 
         if (totalVents == 0) {
             oxygenationPercentage = 0;
@@ -75,7 +88,15 @@ public class RoomScript : MonoBehaviour {
             }
         }
 
-        Debug.Log("Oxygenation Percentage: " + activatedVents / totalVents);
+        //Debug.Log("Oxygenation Percentage: " + activatedVents / totalVents);
         oxygenationPercentage = (activatedVents / totalVents);
+    }
+
+    public Transform GetDoors() {
+        return doorsTransform;
+    }
+
+    public Transform GetMachines() {
+        return machinesTransform;
     }
 }

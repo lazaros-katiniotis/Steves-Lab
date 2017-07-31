@@ -14,6 +14,12 @@ public class InventoryManager : MonoBehaviour {
     void Start() {
         items = new Dictionary<PickupObjectScript.PickupObjectType, int>();
         UpdateGUI(PickupObjectScript.PickupObjectType.KEYCARD);
+        //_TEST_ADD_ITEM(PickupObjectScript.PickupObjectType.KEYCARD, 100);
+    }
+
+    private void _TEST_ADD_ITEM(PickupObjectScript.PickupObjectType type, int total) {
+        items[type] += total;
+        UpdateGUI(type);
     }
 
     // Update is called once per frame
@@ -48,7 +54,6 @@ public class InventoryManager : MonoBehaviour {
 
     private void UpdateGUI(PickupObjectScript.PickupObjectType type) {
         if (!items.ContainsKey(type)) {
-            Debug.Log("Does not contain type, adding...");
             items.Add(type, 0);
         }
         switch (type) {
