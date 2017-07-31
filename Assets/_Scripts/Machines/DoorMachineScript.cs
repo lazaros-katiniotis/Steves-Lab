@@ -18,7 +18,6 @@ public class DoorMachineScript : MachineScript {
     }
 
     protected override void ToggleMachineFunction(PlayerController player) {
-        Debug.Log("DOOR MACHINE TOGGLE FUNCTION!");
         if (doorScript.IsLocked()) {
             if (player.GetInventory().HasItem(PickupObjectScript.PickupObjectType.KEYCARD)) {
                 player.GetInventory().RemoveItem(PickupObjectScript.PickupObjectType.KEYCARD);

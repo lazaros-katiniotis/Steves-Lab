@@ -8,13 +8,23 @@ public class InventoryManager : MonoBehaviour {
     public TextMeshProUGUI keycardDisplay;
     public string keycardTitle;
 
-    public Dictionary<PickupObjectScript.PickupObjectType, int> items;
+    private Dictionary<PickupObjectScript.PickupObjectType, int> items;
 
     // Use this for initialization
     void Start() {
-        items = new Dictionary<PickupObjectScript.PickupObjectType, int>();
+        InitInventory();
         UpdateGUI(PickupObjectScript.PickupObjectType.KEYCARD);
-        //_TEST_ADD_ITEM(PickupObjectScript.PickupObjectType.KEYCARD, 100);
+    }
+
+    private void InitInventory() {
+        items = new Dictionary<PickupObjectScript.PickupObjectType, int>();
+        InitItem(PickupObjectScript.PickupObjectType.KEYCARD);
+    }
+
+    private void InitItem(PickupObjectScript.PickupObjectType type) {
+        if (!items.ContainsKey(type)) {
+            items.Add(type, 0);
+        }
     }
 
     private void _TEST_ADD_ITEM(PickupObjectScript.PickupObjectType type, int total) {
@@ -28,21 +38,15 @@ public class InventoryManager : MonoBehaviour {
     }
 
     public void AddItem(PickupObjectScript.PickupObjectType type) {
-        Debug.Log("Adding item...");
-        if (!items.ContainsKey(type)) {
-            items.Add(type, 1);
-            Debug.Log("here? why?");
-        } else {
-            items[type] = items[type] + 1;
-        }
+        items[type] = items[type] + 1;
         UpdateGUI(type);
     }
 
     public void RemoveItem(PickupObjectScript.PickupObjectType type) {
         if (HasItem(type)) {
             items[type] = items[type] - 1;
+            UpdateGUI(type);
         }
-        UpdateGUI(type);
     }
 
     public bool HasItem(PickupObjectScript.PickupObjectType type) {
@@ -53,9 +57,6 @@ public class InventoryManager : MonoBehaviour {
     }
 
     private void UpdateGUI(PickupObjectScript.PickupObjectType type) {
-        if (!items.ContainsKey(type)) {
-            items.Add(type, 0);
-        }
         switch (type) {
             case PickupObjectScript.PickupObjectType.KEYCARD:
             keycardDisplay.text = keycardTitle + items[type];

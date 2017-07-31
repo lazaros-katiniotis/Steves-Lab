@@ -5,15 +5,14 @@ using UnityEngine;
 public class PickupObjectScript : MonoBehaviour {
 
     public enum PickupObjectType {
-        KEYCARD
+        KEYCARD, HP, OXYGEN
     };
 
     public PickupObjectType type;
+    public Transform spriteTransform;
+    private AudioSource audioSource;
     private Vector2 startPosition;
     private Vector2 nextPosition;
-
-    private AudioSource audioSource;
-    public Transform spriteTransform;
 
     private float elapsed;
     private float bobDuration;
@@ -47,11 +46,31 @@ public class PickupObjectScript : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.tag.Equals("Player")) {
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
-            audioSource.Play();
-            player.GetInventory().AddItem(type);
-            spriteTransform.gameObject.SetActive(false);
-            GetComponent<Collider2D>().enabled = false;
-            StartCoroutine(RemoveFromScene());
+            bool pickedUp = false;
+            switch (type) {
+                case PickupObjectType.KEYCARD:
+                player.GetInventory().AddItem(type);
+                pickedUp = true;
+                break;
+                case PickupObjectType.HP:
+                if (!player.IsHealthFull()) {
+                    player.ReplenishHealth(5.0f);
+                    pickedUp = true;
+                }
+                break;
+                case PickupObjectType.OXYGEN:
+                if (!player.IsOxygenFull()) {
+                    player.ReplenishOxygen(0.25f);
+                    pickedUp = true;
+                }
+                break;
+            }
+            if (pickedUp) {
+                audioSource.Play();
+                spriteTransform.gameObject.SetActive(false);
+                GetComponent<Collider2D>().enabled = false;
+                StartCoroutine(RemoveFromScene());
+            }
         }
     }
 

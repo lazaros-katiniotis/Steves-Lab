@@ -11,13 +11,11 @@ public class PlayerController : MonoBehaviour {
     public GameObject inventory;
 
     private InventoryManager inventoryManager;
-
     private Vector2 velocity;
 
-    private float oxygenLevel;
-
-    public float playerOxygenLevel;
-    public float playerHitPoints;
+    public float playerMaxHitPoints;
+    private float playerHitPoints;
+    private float playerOxygenLevel;
 
     public RoomScript currentRoom;
     public TextMeshProUGUI roomOxygenText;
@@ -33,6 +31,9 @@ public class PlayerController : MonoBehaviour {
     private Material material;
     private bool dead = false;
 
+    public HealthBarScript healthBar;
+    public HealthBarScript oxygenBar;
+
     public enum AnimationState {
         RUN_UP, RUN_DOWN, RUN_LEFT, RUN_RIGHT, IDLE_UP, IDLE_DOWN, IDLE_LEFT, IDLE_RIGHT, DEATH
     }
@@ -44,23 +45,34 @@ public class PlayerController : MonoBehaviour {
     void Start() {
         rb = GetComponent<Rigidbody2D>();
         inventoryManager = inventory.GetComponent<InventoryManager>();
-        //playerHitPoints = 100;
+        playerHitPoints = playerMaxHitPoints;
         playerOxygenLevel = 1.0f;
         animator = GetComponentInChildren<Animator>();
         material = GetComponentInChildren<Renderer>().material;
         prevAnimationState = AnimationState.RUN_DOWN;
         currentAnimationState = AnimationState.RUN_DOWN;
-        StartCoroutine(CheckIfDead());
     }
 
-    public IEnumerator CheckIfDead() {
-        while (playerHitPoints > 0.0f) {
-            yield return null;
+    public void ReplenishHealth(float value) {
+        playerHitPoints += value;
+    }
+
+    public void ReplenishOxygen(float value) {
+        playerOxygenLevel += value;
+
+        if (playerOxygenLevel < 0.0f) {
+            playerOxygenLevel = 0.0f;
+        } else if (playerOxygenLevel > 1.0f) {
+            playerOxygenLevel = 1.0f;
         }
-        dead = true;
-        PlayDeathAnimation();
-        GameManager.GetInstance().GameOver();
-        yield return null;
+    }
+
+    public bool IsHealthFull() {
+        return (playerHitPoints == playerMaxHitPoints);
+    }
+
+    public bool IsOxygenFull() {
+        return (playerOxygenLevel == 1.0f);
     }
 
     public void PlayDeathAnimation() {
@@ -77,6 +89,11 @@ public class PlayerController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+
+        healthBar.SetValue(playerHitPoints / playerMaxHitPoints);
+        oxygenBar.SetValue(playerOxygenLevel);
+
+        CheckIfDead();
         if (dead) {
             return;
         }
@@ -202,6 +219,7 @@ public class PlayerController : MonoBehaviour {
     private float oxygenDamageElapsed;
 
     public void UpdatePlayerHitPoints() {
+        CheckIfDead();
         if (playerOxygenLevel <= 0.0f) {
             oxygenDamageElapsed += Time.deltaTime;
             if (oxygenDamageElapsed > 1.0f) {
@@ -211,7 +229,20 @@ public class PlayerController : MonoBehaviour {
         } else {
             oxygenDamageElapsed = 0.0f;
         }
+
+        if (playerHitPoints > playerMaxHitPoints) {
+            playerHitPoints = playerMaxHitPoints;
+        }
     }
+
+    public void CheckIfDead() {
+        if (playerHitPoints <= 0.0f) {
+            dead = true;
+            PlayDeathAnimation();
+            GameManager.GetInstance().GameOver();
+        }
+    }
+
 
     public InventoryManager GetInventory() {
         return inventoryManager;

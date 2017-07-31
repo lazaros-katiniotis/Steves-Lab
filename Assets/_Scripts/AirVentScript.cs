@@ -15,6 +15,7 @@ public class AirVentScript : TogglableObject {
         if (activeOnStart) {
             TurnOn();
         }
+        room = transform.GetComponentInParent<RoomScript>();
     }
 
     void Update() {
@@ -27,12 +28,18 @@ public class AirVentScript : TogglableObject {
     }
 
     public override void TurnOn() {
+        if (room == null) {
+            room = transform.GetComponentInParent<RoomScript>();
+        }
         activated = true;
         light.TurnOn();
         room.CalculateOxygenationPercentage();
     }
 
     public override void TurnOff() {
+        if (room == null) {
+            room = transform.GetComponentInParent<RoomScript>();
+        }
         activated = false;
         light.TurnOff();
         room.CalculateOxygenationPercentage();
