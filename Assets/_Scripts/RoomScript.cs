@@ -43,7 +43,8 @@ public class RoomScript : MonoBehaviour {
             oxygenLevel += Time.deltaTime * 5f;
 
         } else {
-            oxygenLevel -= Time.deltaTime * (1 - oxygenationPercentage);
+            //oxygenLevel -= Time.deltaTime * (1 - oxygenationPercentage);
+            oxygenLevel = 0.0f;
         }
 
         //elapsed += Time.deltaTime;

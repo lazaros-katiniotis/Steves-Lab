@@ -13,12 +13,9 @@ public class DataManager : MonoBehaviour {
 
     private bool gameJustStarted = true;
 
-    public AudioClip intro;
-    public AudioClip loop;
-
-    private AudioClip current;
+    public AudioClip song;
     private AudioSource audio;
-    private bool isAudioLooping;
+    private float songDelay;
 
     // Use this for initialization
     void Start() {
@@ -30,27 +27,23 @@ public class DataManager : MonoBehaviour {
             return;
         }
 
-        current = intro;
         audio = GetComponent<AudioSource>();
-        audio.clip = current;
-        audio.Play();
-        audio.loop = false;
-        isAudioLooping = false;
+        audio.clip = song;
+        audio.loop = true;
+        TurnOnMusic(3.45f);
+    }
+
+    public void TurnOnMusic(float delay) {
+        audio.volume = 0.65f;
+        audio.PlayDelayed(delay);
     }
 
     private void Awake() {
         DontDestroyOnLoad(this.gameObject);
     }
 
-    // Update is called once per frame
     void Update() {
-        if (!audio.isPlaying && !isAudioLooping) {
-            Debug.Log("in here.");
-            audio.clip = loop;
-            audio.loop = true;
-            audio.Play();
-            isAudioLooping = true;
-        }
+
     }
 
     public static DataManager GetInstance() {

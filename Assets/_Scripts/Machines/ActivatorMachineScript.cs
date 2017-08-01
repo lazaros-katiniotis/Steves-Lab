@@ -19,24 +19,9 @@ public class ActivatorMachineScript : MachineScript {
     protected override void ToggleMachineFunction(PlayerController player) {
         activated = !activated;
         foreach (TogglableObject obj in affectedObjects) {
+            Debug.Log("Toggling: " + obj.transform.name);
             obj.Toggle();
         }
-
-        /*
-        //Debug.Log("Machine function togled!");
-        foreach (TogglableObject obj in affectedObjects) {
-        Type type = obj.GetType();
-        if (obj.GetType() == typeof(WallLampScript)) {
-        //obj.gameObject.SetActive(!obj.gameObject.activeSelf);
-        WallLampScript lamp = obj.GetComponent<WallLampScript>();
-        lamp.Toggle();
-        } else if (obj.GetType() == typeof(AirVentScript)) {
-        AirVentScript vent = obj.GetComponent<AirVentScript>();
-        vent.Toggle();
-        Debug.Log("Vent: " + vent.transform.name + " is activated:" + vent.IsActivated());
-        }
-        }
-        */
     }
 
     public override void Toggle() {

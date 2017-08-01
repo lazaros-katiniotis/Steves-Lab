@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class FlameScript : MonoBehaviour {
 
-    public int damage;
     private bool insideFlames;
     private static PlayerController player;
     // Use this for initialization
@@ -19,7 +18,7 @@ public class FlameScript : MonoBehaviour {
         }
         if (insideFlames) {
             if (!player.WasRecentlyHurt()) {
-                player.Hurt(damage);
+                player.Hurt(10);
             }
         }
     }

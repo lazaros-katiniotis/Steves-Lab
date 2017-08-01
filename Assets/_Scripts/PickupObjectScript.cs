@@ -54,13 +54,13 @@ public class PickupObjectScript : MonoBehaviour {
                 break;
                 case PickupObjectType.HP:
                 if (!player.IsHealthFull()) {
-                    player.ReplenishHealth(5.0f);
+                    player.ReplenishHealth(7.5f);
                     pickedUp = true;
                 }
                 break;
                 case PickupObjectType.OXYGEN:
                 if (!player.IsOxygenFull()) {
-                    player.ReplenishOxygen(0.25f);
+                    player.ReplenishOxygen(0.3f);
                     pickedUp = true;
                 }
                 break;

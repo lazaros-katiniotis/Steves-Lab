@@ -46,6 +46,7 @@ public class DoorScript : TogglableObject {
     void Update() {
         if (shouldLockDoor) {
             if (!isInsideDoorArea) {
+                Debug.Log("Should lock door, so since player is not inside door area im locking the door.");
                 Lock();
                 shouldLockDoor = false;
             }
@@ -114,12 +115,14 @@ public class DoorScript : TogglableObject {
     }
 
     public override void Toggle() {
-        //Debug.Log("Toggle CALLED");
+        Debug.Log("Doorscripts Toggle called");
 
         if (IsLocked()) {
+            Debug.Log("Door is locked, lockwhenplayerLeaves = true, unlocking door");
             lockWhenPlayerLeaves = true;
             Unlock();
         } else {
+            Debug.Log("Door not locked, should lock door");
             shouldLockDoor = true;
         }
     }

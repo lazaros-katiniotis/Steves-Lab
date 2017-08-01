@@ -14,8 +14,8 @@ public class PlayerController : MonoBehaviour {
     private Vector2 velocity;
 
     public float playerMaxHitPoints;
-    private float playerHitPoints;
-    private float playerOxygenLevel;
+    public float playerHitPoints;
+    public float playerOxygenLevel;
 
     public RoomScript currentRoom;
 
@@ -52,13 +52,10 @@ public class PlayerController : MonoBehaviour {
     void Start() {
         rb = GetComponent<Rigidbody2D>();
         inventoryManager = inventory.GetComponent<InventoryManager>();
-        playerHitPoints = playerMaxHitPoints - 10.0f;
-        playerOxygenLevel = 1.0f;
         animator = GetComponentInChildren<Animator>();
         material = GetComponentInChildren<Renderer>().material;
         bool value = DataManager.GetInstance().HasGameJustStarted();
-        if (false) {
-            //prevAnimationState = AnimationState.START;
+        if (value) {
             prevAnimationState = AnimationState.START;
             currentAnimationState = AnimationState.START;
             animator.Play("PlayerStart");
@@ -96,7 +93,6 @@ public class PlayerController : MonoBehaviour {
     }
 
     public void Hurt(int damage) {
-        Debug.Log("PLAYER HURT!");
         hurt = true;
         playerHitPoints -= damage;
     }
@@ -254,9 +250,9 @@ public class PlayerController : MonoBehaviour {
             if (currentRoom.GetCurrentOxygenPercent() <= 0.0f) {
                 playerOxygenLevel -= Time.deltaTime * 0.0333f;
             } else if (currentRoom.GetCurrentOxygenPercent() < 1.0f) {
-                playerOxygenLevel += Time.deltaTime * 0.0333f;
+                playerOxygenLevel += Time.deltaTime * 0.02f;
             } else if (currentRoom.GetCurrentOxygenPercent() >= 1.0f) {
-                playerOxygenLevel += Time.deltaTime * 0.5f;
+                playerOxygenLevel += Time.deltaTime * 0.05f;
             }
         }
 
@@ -275,7 +271,6 @@ public class PlayerController : MonoBehaviour {
     private float oxygenDamageElapsed;
 
     public void UpdatePlayerHitPoints() {
-        CheckIfDead();
         if (playerOxygenLevel <= 0.0f) {
             oxygenDamageElapsed += Time.deltaTime;
             if (oxygenDamageElapsed > 1.0f) {
@@ -293,6 +288,7 @@ public class PlayerController : MonoBehaviour {
 
     public void CheckIfDead() {
         if (playerHitPoints <= 0.0f) {
+            playerHitPoints = 0.0f;
             dead = true;
             PlayDeathAnimation();
             GameManager.GetInstance().GameOver();
