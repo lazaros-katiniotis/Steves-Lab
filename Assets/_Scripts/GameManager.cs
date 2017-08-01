@@ -10,9 +10,9 @@ public class GameManager : MonoBehaviour {
     public Transform currentLevelTransform;
     public Transform canvasTransform;
     public GameObject gameOverBanner;
-    private string currentScene;
-
     public TextMeshProUGUI restartMessage;
+    public TextMeshProUGUI keycardText;
+
     private bool displayRestartMessage;
     private bool displayGameOverBanner;
     private Color startColor;
@@ -31,9 +31,6 @@ public class GameManager : MonoBehaviour {
             Destroy(this.gameObject);
             return;
         }
-
-        currentScene = "test";
-
         InitCurrentLevel();
     }
 
@@ -47,6 +44,8 @@ public class GameManager : MonoBehaviour {
         endColor = new Color(startColor.r, startColor.g, startColor.b, 1.0f);
         displayRestartMessage = false;
         displayGameOverBanner = false;
+
+
     }
 
     public void AddMachine(DoorScript doorScript) {
@@ -65,7 +64,7 @@ public class GameManager : MonoBehaviour {
         }
         if (player.IsDead()) {
             if (Input.GetKeyDown(KeyCode.Space)) {
-                UnityEngine.SceneManagement.SceneManager.LoadScene(currentScene);
+                UnityEngine.SceneManagement.SceneManager.LoadScene(DataManager.GetInstance().GetCurrentScene());
             }
         }
         if (displayGameOverBanner) {
@@ -87,14 +86,16 @@ public class GameManager : MonoBehaviour {
         player.transform.SetParent(null);
         player.DisableBars();
         gameOverBanner.SetActive(true);
+        keycardText.gameObject.SetActive(false);
         currentLevelTransform.gameObject.SetActive(false);
+
         //canvasTransform.DetachChildren();
     }
 
     private IEnumerator GameOverAnimations() {
         float elapsed = 0.0f;
-        while (elapsed < 1.7f) {
-            if (elapsed > 1.25f) {
+        while (elapsed < 1.5f) {
+            if (elapsed > 0.75f) {
                 startPos = gameOverBanner.transform.position;
                 displayGameOverBanner = true;
             }

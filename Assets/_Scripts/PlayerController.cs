@@ -18,9 +18,10 @@ public class PlayerController : MonoBehaviour {
     private float playerOxygenLevel;
 
     public RoomScript currentRoom;
-    public TextMeshProUGUI roomOxygenText;
-    public TextMeshProUGUI playerOxygenText;
-    public TextMeshProUGUI playerHpText;
+
+    //public TextMeshProUGUI roomOxygenText;
+    //public TextMeshProUGUI playerOxygenText;
+    //public TextMeshProUGUI playerHpText;
 
     private Animator animator;
 
@@ -34,8 +35,14 @@ public class PlayerController : MonoBehaviour {
     public HealthBarScript healthBar;
     public HealthBarScript oxygenBar;
 
+    private float waitTimer;
+    private float waitDuration;
+
+    private bool hurt;
+    private float hurtTimer;
+
     public enum AnimationState {
-        RUN_UP, RUN_DOWN, RUN_LEFT, RUN_RIGHT, IDLE_UP, IDLE_DOWN, IDLE_LEFT, IDLE_RIGHT, DEATH
+        RUN_UP, RUN_DOWN, RUN_LEFT, RUN_RIGHT, IDLE_UP, IDLE_DOWN, IDLE_LEFT, IDLE_RIGHT, DEATH, START, CONTINUE
     }
 
     private AnimationState currentAnimationState;
@@ -49,8 +56,20 @@ public class PlayerController : MonoBehaviour {
         playerOxygenLevel = 1.0f;
         animator = GetComponentInChildren<Animator>();
         material = GetComponentInChildren<Renderer>().material;
-        prevAnimationState = AnimationState.RUN_DOWN;
-        currentAnimationState = AnimationState.RUN_DOWN;
+        bool value = DataManager.GetInstance().HasGameJustStarted();
+        if (false) {
+            //prevAnimationState = AnimationState.START;
+            prevAnimationState = AnimationState.START;
+            currentAnimationState = AnimationState.START;
+            animator.Play("PlayerStart");
+            waitDuration = 4.5f;
+            DataManager.GetInstance().SetGameJustStarted(false);
+        } else {
+            animator.Play("PlayerContinue");
+            prevAnimationState = AnimationState.CONTINUE;
+            currentAnimationState = AnimationState.CONTINUE;
+            waitDuration = 0.6f;
+        }
     }
 
     public void DisableBars() {
@@ -70,6 +89,16 @@ public class PlayerController : MonoBehaviour {
         } else if (playerOxygenLevel > 1.0f) {
             playerOxygenLevel = 1.0f;
         }
+    }
+
+    public bool WasRecentlyHurt() {
+        return hurt;
+    }
+
+    public void Hurt(int damage) {
+        Debug.Log("PLAYER HURT!");
+        hurt = true;
+        playerHitPoints -= damage;
     }
 
     public bool IsHealthFull() {
@@ -94,18 +123,32 @@ public class PlayerController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-
         healthBar.SetValue(playerHitPoints / playerMaxHitPoints);
         oxygenBar.SetValue(playerOxygenLevel);
+
+        waitTimer += Time.deltaTime;
+        if (waitTimer < waitDuration) {
+            return;
+        }
+
+        if (WasRecentlyHurt()) {
+            hurtTimer += Time.deltaTime;
+            if (hurtTimer > 1.0f) {
+                hurt = false;
+                hurtTimer = 0.0f;
+            }
+        }
+
 
         CheckIfDead();
         if (dead) {
             return;
         }
+
         if (currentRoom != null) {
-            roomOxygenText.text = "Room Oxygen%: " + currentRoom.GetCurrentOxygenPercent().ToString("F2");
+            //roomOxygenText.text = "Room Oxygen%: " + currentRoom.GetCurrentOxygenPercent().ToString("F2");
         } else {
-            roomOxygenText.text = "No Room";
+            //roomOxygenText.text = "No Room";
         }
 
         UpdatePlayerOxygenLevel();
@@ -150,6 +193,10 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void UpdateAnimation() {
+        //if (currentAnimationState == AnimationState.START) {
+
+        //}
+
         if (h == 1 && v == 0) {
             animator.Play("PlayerRunRight");
             currentAnimationState = AnimationState.RUN_RIGHT;
@@ -221,8 +268,8 @@ public class PlayerController : MonoBehaviour {
     }
 
     public void UpdatePlayerGUI() {
-        playerOxygenText.text = "Player Oxygen%: " + playerOxygenLevel.ToString("F2");
-        playerHpText.text = "Player HP: " + playerHitPoints;
+        //playerOxygenText.text = "Player Oxygen%: " + playerOxygenLevel.ToString("F2");
+        //playerHpText.text = "Player HP: " + playerHitPoints;
     }
 
     private float oxygenDamageElapsed;
