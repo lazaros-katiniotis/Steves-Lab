@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviour {
         animator = GetComponentInChildren<Animator>();
         material = GetComponentInChildren<Renderer>().material;
         bool value = DataManager.GetInstance().HasGameJustStarted();
+        value = false;
         if (value) {
             prevAnimationState = AnimationState.START;
             currentAnimationState = AnimationState.START;
@@ -119,8 +120,10 @@ public class PlayerController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        healthBar.SetValue(playerHitPoints / playerMaxHitPoints);
-        oxygenBar.SetValue(playerOxygenLevel);
+        healthBar.SetValue("_Cutoff", playerHitPoints / playerMaxHitPoints);
+
+        oxygenBar.SetCutoffValue(playerOxygenLevel);
+        oxygenBar.SetHighlightValue(playerOxygenLevel);
 
         waitTimer += Time.deltaTime;
         if (waitTimer < waitDuration) {

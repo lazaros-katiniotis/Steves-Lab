@@ -20,8 +20,16 @@ public class HealthBarScript : MonoBehaviour {
 
     }
 
-    public void SetValue(float value) {
+    public void SetValue(string id, float value) {
+        material.SetFloat(id, value);
+    }
+
+    public void SetCutoffValue(float value) {
         material.SetFloat("_Cutoff", value);
+    }
+
+    public void SetHighlightValue(float value) {
+        material.SetFloat("_HighlightValue", value);
     }
 
     public void RemoveChunk(float percentage) {

@@ -9,7 +9,7 @@
 		_CutoffTex("Cutoff Texture", 2D) = "white" {}
 		_Cutoff("Cutoff Value", Range(0.0, 1.0)) = 0.0
 		_InvertedCutoff("Inverted Cutoff Texture", Range(0.0, 1.0)) = 0.0
-		_HitPercentage("Hit Value", Range(0.0, 1.0)) = 0.0
+		_HighlightValue("Highlight Value", Range(0.0, 1.0)) = 0.0
 		_FlashValue("Flash Value", Range(-1.0, 1.0)) = 0.0
 		_FlashColor("Flash Color", Color) = (1.0, 1.0, 1.0, 1.0)
 	}
@@ -45,7 +45,7 @@
 
 			sampler2D _MainTex, _FillTex, _BorderTex, _DetailTex, _CutoffTex;
 			float4 _MainTex_ST, _FillTex_ST, _BorderTex_ST, _DetailTex_ST, _CutoffTex_ST;
-			float _Cutoff, _HitPercentage;
+			float _Cutoff, _HighlightValue;
 			fixed _InvertCutoff;
 			half _FlashValue;
 			fixed4 _FlashColor;
@@ -65,26 +65,29 @@
 				fixed4 col;
 				fixed4 background = tex2D(_MainTex, i.uv);
 				fixed4 fill = tex2D(_FillTex, i.uv);
-				fill.a = 1;
 				fixed4 border = tex2D(_BorderTex, i.uv);
-				border.a = 0;
 				float c = 1 - tex2D(_CutoffTex, i.uv).x; 
 
-				col = background;
+				col.rgb = background.rgb;
 
-				if (_HitPercentage > c) {
-					col = fill*2 - border;
+				if (border.a != 0) {
+					//col.rgb = border.rgb;
 				}
 
-				fixed time = (sin(_Time.y*4)+1)/2;
-				_DetailTex_ST.w -= _DetailTex_ST.w * _Time.y;
-				fixed4 detail =  tex2D(_DetailTex, i.uv_detail + _DetailTex_ST.zw);
-				fixed4 small_detail = tex2D(_DetailTex, i.uv_detail * 2 + _DetailTex_ST.zw);
+				//fixed time = (sin(_Time.y*4)+1)/2;
+				//_DetailTex_ST.w -= _DetailTex_ST.w * _Time.y;
+				//fixed4 detail =  tex2D(_DetailTex, i.uv_detail + _DetailTex_ST.zw);
+				//fixed4 small_detail = tex2D(_DetailTex, i.uv_detail * 2 + _DetailTex_ST.zw);
 
-				if (_Cutoff > c) {
+				if (_HighlightValue > c && fill.a != 0) {
+					col.rgb = fill.rgb * 2;
+				}
+
+				if (_Cutoff > c && fill.a != 0) {
 					//col = tex2D(_FillTex, i.uv) * detail + lerp(_FlashColor, fixed4(0, 0, 0, 0), time);
-					col = fill;
+					col.rgb = fill.rgb;
 				}
+
 				return col;
 			}
 			ENDCG
