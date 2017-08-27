@@ -32,6 +32,14 @@ public class HealthBarScript : MonoBehaviour {
         material.SetFloat("_HighlightValue", value);
     }
 
+    public void StartFlash() {
+        material.SetFloat("_FlashValue", 1.0f);
+    }
+
+    public void StopFlash() {
+        material.SetFloat("_FlashValue", 0.0f);
+    }
+
     public void RemoveChunk(float percentage) {
 
     }

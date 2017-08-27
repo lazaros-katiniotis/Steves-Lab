@@ -1,4 +1,4 @@
-﻿Shader "Custom/OxygenBarShader"
+﻿Shader "Custom/LifeBarShader"
 {
 	Properties
 	{
@@ -45,7 +45,6 @@
 			sampler2D _MainTex, _FillTex, _BorderTex, _DetailTex, _CutoffTex;
 			float4 _MainTex_ST, _FillTex_ST, _BorderTex_ST, _DetailTex_ST, _CutoffTex_ST;
 			float _Cutoff, _HighlightValue;
-			fixed _InvertCutoff;
 			half _FlashValue;
 			fixed4 _FlashColor;
 			
@@ -69,9 +68,14 @@
 				fixed time = (sin(_Time.y*5)+1)/2;
 
 				col = background;
+
+				if (_HighlightValue < c) {
+					fill = fill + fill;
+				}
+
 				if (_Cutoff > c) {
 					if (_FlashValue == 1.0 && fill.a != 0) {
-						fill = lerp(fill + _FlashColor, fill, time);
+						//fill = lerp(fill + _FlashColor, fill, time);
 					}
 					col = fill + border;
 				}

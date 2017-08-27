@@ -247,16 +247,25 @@ public class PlayerController : MonoBehaviour {
     }
 
     public void UpdatePlayerOxygenLevel() {
+        bool depleting = false;
         if (currentRoom == null) {
             playerOxygenLevel -= Time.deltaTime * 0.333f;
+            depleting = true;
         } else {
             if (currentRoom.GetCurrentOxygenPercent() <= 0.0f) {
                 playerOxygenLevel -= Time.deltaTime * 0.0333f;
+                depleting = true;
             } else if (currentRoom.GetCurrentOxygenPercent() < 1.0f) {
                 playerOxygenLevel += Time.deltaTime * 0.02f;
             } else if (currentRoom.GetCurrentOxygenPercent() >= 1.0f) {
                 playerOxygenLevel += Time.deltaTime * 0.05f;
             }
+        }
+
+        if (depleting) {
+            oxygenBar.StartFlash();
+        } else {
+            oxygenBar.StopFlash();
         }
 
         if (playerOxygenLevel < 0.0f) {
