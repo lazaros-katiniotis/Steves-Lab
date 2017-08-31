@@ -6,6 +6,7 @@ using UnityEngine;
 public class ActivatorMachineScript : MachineScript {
 
     private Light light;
+    public GameObject lightningParticleSystem;
 
     void Start() {
         light = GetComponentInChildren<Light>();
@@ -18,6 +19,7 @@ public class ActivatorMachineScript : MachineScript {
 
     protected override void ToggleMachineFunction(PlayerController player) {
         activated = !activated;
+        lightningParticleSystem.SetActive(activated);
         foreach (TogglableObject obj in affectedObjects) {
             Debug.Log("Toggling: " + obj.transform.name);
             obj.Toggle();

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public abstract class TogglableObject : MonoBehaviour {
 
+    public Transform colliderTransform;
     public bool activeOnStart;
     protected bool activated;
     protected bool firstTimeActivated;
@@ -26,4 +27,9 @@ public abstract class TogglableObject : MonoBehaviour {
     public bool IsActivated() {
         return activated;
     }
+
+    public Component GetColliderTransform() {
+        return colliderTransform;
+    }
+
 }
