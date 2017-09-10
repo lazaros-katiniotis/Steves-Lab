@@ -35,6 +35,8 @@ public class PlayerController : MonoBehaviour {
     public HealthBarScript healthBar;
     public HealthBarScript oxygenBar;
 
+    private PlayerInteractionScript interactionScript;
+
     private float waitTimer;
     private float waitDuration;
 
@@ -48,7 +50,10 @@ public class PlayerController : MonoBehaviour {
     private AnimationState currentAnimationState;
     private AnimationState prevAnimationState;
 
-    // Use this for initialization
+    private void Awake() {
+        interactionScript = GetComponentInChildren<PlayerInteractionScript>();
+    }
+
     void Start() {
         rb = GetComponent<Rigidbody2D>();
         inventoryManager = inventory.GetComponent<InventoryManager>();
@@ -170,7 +175,17 @@ public class PlayerController : MonoBehaviour {
             CheckIfDead();
         }
         if (Input.GetButtonDown("Use")) {
-            foreach (MachineScript obj in GameManager.GetInstance().GetMachines()) {
+
+            //get
+            GameObject lastObject = interactionScript.GetLastObjectInteracted();
+
+            if (lastObject == null) {
+                return;
+            }
+
+            Debug.Log(lastObject.name);
+
+            foreach (TerminalScript obj in GameManager.GetInstance().GetTerminals()) {
                 float xDelta = Mathf.Abs(obj.transform.position.x - this.transform.position.x);
                 float yDelta = Mathf.Abs(obj.transform.position.y - this.transform.position.y);
                 float distance = Mathf.Sqrt(xDelta * xDelta + yDelta * yDelta);

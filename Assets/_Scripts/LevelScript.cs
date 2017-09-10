@@ -11,16 +11,12 @@ public class LevelScript : MonoBehaviour {
         for (int i = 0; i < roomsTransform.childCount; i++) {
             RoomScript room = roomsTransform.GetChild(i).GetComponent<RoomScript>();
             for (int j = 0; j < room.GetDoors().childCount; j++) {
-                GameManager.GetInstance().AddMachine(room.GetDoors().GetChild(j).GetComponent<DoorScript>());
+                GameManager.GetInstance().AddTerminal(room.GetDoors().GetChild(j).GetComponent<DoorScript>());
             }
-            for (int j = 0; j < room.GetMachines().childCount; j++) {
-                GameManager.GetInstance().AddMachine(room.GetMachines().GetChild(j).GetComponent<MachineScript>());
+            for (int j = 0; j < room.GetTerminals().childCount; j++) {
+                GameManager.GetInstance().AddTerminal(room.GetTerminals().GetChild(j).GetComponent<TerminalScript>());
             }
         }
     }
 
-    // Update is called once per frame
-    void Update() {
-
-    }
 }

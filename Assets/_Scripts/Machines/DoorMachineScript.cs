@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorMachineScript : MachineScript {
+public class DoorMachineScript : TerminalScript {
 
     private DoorScript doorScript;
 
@@ -17,7 +17,7 @@ public class DoorMachineScript : MachineScript {
 
     }
 
-    protected override void ToggleMachineFunction(PlayerController player) {
+    protected override void ToggleTerminalFunction(PlayerController player) {
         if (doorScript.IsLocked()) {
             if (player.GetInventory().HasItem(PickupObjectScript.PickupObjectType.KEYCARD)) {
                 player.GetInventory().RemoveItem(PickupObjectScript.PickupObjectType.KEYCARD);
@@ -30,14 +30,14 @@ public class DoorMachineScript : MachineScript {
     }
 
     public override void Toggle() {
-        ToggleMachineFunction(GameManager.GetInstance().player);
+        ToggleTerminalFunction(GameManager.GetInstance().player);
     }
 
-    public override void TurnOn() {
+    protected override void TurnOn() {
 
     }
 
-    public override void TurnOff() {
+    protected override void TurnOff() {
 
     }
 }

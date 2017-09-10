@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class LightningCurrentScript : MonoBehaviour {
+public class LightningParticleScript : MonoBehaviour {
 
     private List<TogglableObject> affectedObjects;
     private ParticleSystem ps;
@@ -25,10 +25,13 @@ public class LightningCurrentScript : MonoBehaviour {
         var vel = ps.velocityOverLifetime;
         vel.x = -direction.x * 20f / distance;
         vel.y = -direction.y * 20f / distance;
-
-        particleVelocity.x = direction.x * 20f / distance;
-        particleVelocity.y = direction.y * 20f / distance;
+        var main = ps.main;
+        float speed = 20f;
+        particleVelocity.x = direction.x * speed / distance;
+        particleVelocity.y = direction.y * speed / distance;
         particleVelocity.z = 0;
+        float velocity = Mathf.Sqrt(particleVelocity.x * particleVelocity.x + particleVelocity.y * particleVelocity.y);
+        main.startLifetime = (distance / velocity) + 1;
 
         var trigger = ps.trigger;
         trigger.SetCollider(0, script.affectedObjects[0].GetColliderTransform());

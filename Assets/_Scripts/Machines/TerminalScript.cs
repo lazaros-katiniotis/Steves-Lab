@@ -3,11 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class MachineScript : TogglableObject {
+public abstract class TerminalScript : TogglableObject {
 
     public List<TogglableObject> affectedObjects;
     private float elapsed;
     public float duration = 30.0f;
+
+    private void OnEnable() {
+        elapsed = 0.0f;
+    }
 
     void Start() {
         activated = false;
@@ -19,13 +23,13 @@ public abstract class MachineScript : TogglableObject {
             if (elapsed > duration) {
                 elapsed -= duration;
                 if (activated) {
-                    ToggleMachineFunction(null);
+                    ToggleTerminalFunction(null);
                 }
                 activated = false;
             }
         }
     }
 
-    protected abstract void ToggleMachineFunction(PlayerController player);
+    protected abstract void ToggleTerminalFunction(PlayerController player);
 
 }

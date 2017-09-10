@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class DoorScript : TogglableObject {
 
-    public MachineScript terminal;
+    public TerminalScript terminal;
     public Transform closedSpriteTransform;
     public Transform openSpriteTransform;
     public Transform lockedLightTransform;
@@ -39,7 +39,7 @@ public class DoorScript : TogglableObject {
         return previousRoom;
     }
 
-    public MachineScript GetTerminal() {
+    public TerminalScript GetTerminalScript() {
         return terminal;
     }
 
@@ -132,12 +132,12 @@ public class DoorScript : TogglableObject {
         return locked;
     }
 
-    public override void TurnOn() {
+    protected override void TurnOn() {
         closedSpriteTransform.gameObject.SetActive(false);
         openSpriteTransform.gameObject.SetActive(true);
     }
 
-    public override void TurnOff() {
+    protected override void TurnOff() {
         closedSpriteTransform.gameObject.SetActive(true);
         openSpriteTransform.gameObject.SetActive(false);
     }

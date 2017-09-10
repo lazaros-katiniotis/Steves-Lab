@@ -3,19 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OxygenMachineScript : MachineScript {
+public class OxygenMachineScript : TerminalScript {
 
-    // Use this for initialization
-    void Start() {
-
-    }
-
-    // Update is called once per frame
-    void Update() {
-
-    }
-
-    protected override void ToggleMachineFunction(PlayerController player) {
+    protected override void ToggleTerminalFunction(PlayerController player) {
         foreach (TogglableObject obj in affectedObjects) {
             AirVentScript vent = obj.GetComponent<AirVentScript>();
 
@@ -23,14 +13,14 @@ public class OxygenMachineScript : MachineScript {
     }
 
     public override void Toggle() {
-        ToggleMachineFunction(GameManager.GetInstance().player);
+        ToggleTerminalFunction(GameManager.GetInstance().player);
     }
 
-    public override void TurnOn() {
+    protected override void TurnOn() {
 
     }
 
-    public override void TurnOff() {
+    protected override void TurnOff() {
 
     }
 }
