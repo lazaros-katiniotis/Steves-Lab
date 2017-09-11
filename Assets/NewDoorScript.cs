@@ -1,16 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewDoorScript : MonoBehaviour {
+public class NewDoorScript : TogglableObject {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public override void Toggle() {
+        throw new NotImplementedException();
+    }
+
+    protected override void TurnOff() {
+        throw new NotImplementedException();
+    }
+
+    protected override void TurnOn() {
+        throw new NotImplementedException();
+    }
 }

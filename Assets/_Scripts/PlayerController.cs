@@ -35,7 +35,9 @@ public class PlayerController : MonoBehaviour {
     public HealthBarScript healthBar;
     public HealthBarScript oxygenBar;
 
-    private PlayerInteractionScript interactionScript;
+    //private PlayerInteractionScript interactionScript;
+
+    private GameObject lastInteractedObject;
 
     private float waitTimer;
     private float waitDuration;
@@ -51,7 +53,7 @@ public class PlayerController : MonoBehaviour {
     private AnimationState prevAnimationState;
 
     private void Awake() {
-        interactionScript = GetComponentInChildren<PlayerInteractionScript>();
+        //interactionScript = GetComponentInChildren<PlayerInteractionScript>();
     }
 
     void Start() {
@@ -177,14 +179,23 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetButtonDown("Use")) {
 
             //get
-            GameObject lastObject = interactionScript.GetLastObjectInteracted();
+            //GameObject lastInteractedObject = interactionScript.GetLastObjectInteracted();
 
-            if (lastObject == null) {
+            if (lastInteractedObject == null) {
                 return;
             }
+            Debug.Log(lastInteractedObject);
+            Debug.Log(lastInteractedObject.tag);
+            switch (lastInteractedObject.tag) {
+                case "Door":
+                NewDoorScript doorScript = lastInteractedObject.GetComponentInParent<NewDoorScript>();
+                doorScript.Toggle();
+                break;
+                default:
+                break;
+            }
 
-            Debug.Log(lastObject.name);
-
+            /*
             foreach (TerminalScript obj in GameManager.GetInstance().GetTerminals()) {
                 float xDelta = Mathf.Abs(obj.transform.position.x - this.transform.position.x);
                 float yDelta = Mathf.Abs(obj.transform.position.y - this.transform.position.y);
@@ -193,6 +204,7 @@ public class PlayerController : MonoBehaviour {
                     obj.Toggle();
                 }
             }
+            */
         }
 
         h = Input.GetAxisRaw("Horizontal");
@@ -341,9 +353,7 @@ public class PlayerController : MonoBehaviour {
 
     }
 
-    private void OnCollisionEnter2D(Collision2D collision) {
-
+    public void SetLastInteractedObject(GameObject obj) {
+        lastInteractedObject = obj;
     }
-
-
 }

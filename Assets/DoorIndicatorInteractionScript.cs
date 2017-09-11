@@ -2,13 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorInteractionScript : MonoBehaviour {
-
-    private NewDoorScript doorScript;
-
-    private void Awake() {
-        doorScript = GetComponentInParent<NewDoorScript>();
-    }
+public class DoorIndicatorInteractionScript : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision) {
         GameObject obj = collision.transform.parent.gameObject;
@@ -16,7 +10,9 @@ public class DoorInteractionScript : MonoBehaviour {
         //Debug.Log(this.transform.parent.name + "'s OnTriggerEnter2D() called:" + obj.name + " entered it's AoI");
         switch (tag) {
             case "Player":
-            Debug.Log("Player is Inside Door AoI!");
+            Debug.Log("Player is Inside Door Indicator AoI!");
+            PlayerController player = obj.GetComponent<PlayerController>();
+            player.SetLastInteractedObject(this.transform.parent.gameObject);
             break;
         }
     }
@@ -24,12 +20,14 @@ public class DoorInteractionScript : MonoBehaviour {
     private void OnTriggerExit2D(Collider2D collision) {
         GameObject obj = collision.transform.parent.gameObject;
         string tag = obj.tag;
-        //Debug.Log(this.transform.parent.name + "'s OnTriggerExit2D() called:" + obj.name + " exited it's AoI");
+        Debug.Log(this.transform.parent.name + "'s OnTriggerExit2D() called:" + obj.name + " exited it's AoI");
         switch (tag) {
             case "Player":
-            Debug.Log("Player exited Inside Door AoI!");
+            Debug.Log("exited Door Indicator AoI!");
+            PlayerController player = obj.GetComponent<PlayerController>();
+            player.SetLastInteractedObject(null);
             break;
         }
+        obj = null;
     }
-
 }

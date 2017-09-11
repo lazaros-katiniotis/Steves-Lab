@@ -45,7 +45,7 @@ public class PickupObjectScript : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.tag.Equals("Player")) {
-            PlayerController player = collision.gameObject.GetComponent<PlayerController>();
+            PlayerController player = collision.gameObject.GetComponentInParent<PlayerController>();
             bool pickedUp = false;
             switch (type) {
                 case PickupObjectType.KEYCARD:
