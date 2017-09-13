@@ -5,15 +5,20 @@ using UnityEngine;
 
 public class NewDoorScript : TogglableObject {
 
+    public Transform closedSpriteTransform;
+    public Transform openSpriteTransform;
+
     public override void Toggle() {
-        throw new NotImplementedException();
+
     }
 
-    protected override void TurnOff() {
-        throw new NotImplementedException();
+    public override void TurnOn() {
+        closedSpriteTransform.gameObject.SetActive(false);
+        openSpriteTransform.gameObject.SetActive(true);
     }
 
-    protected override void TurnOn() {
-        throw new NotImplementedException();
+    public override void TurnOff() {
+        closedSpriteTransform.gameObject.SetActive(true);
+        openSpriteTransform.gameObject.SetActive(false);
     }
 }

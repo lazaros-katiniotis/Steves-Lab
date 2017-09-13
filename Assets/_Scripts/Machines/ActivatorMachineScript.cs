@@ -35,11 +35,11 @@ public class ActivatorMachineScript : TerminalScript {
         }
     }
 
-    protected override void TurnOn() {
+    public override void TurnOn() {
         throw new NotImplementedException();
     }
 
-    protected override void TurnOff() {
+    public override void TurnOff() {
         throw new NotImplementedException();
     }
 

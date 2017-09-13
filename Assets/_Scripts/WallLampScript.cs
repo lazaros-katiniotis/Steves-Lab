@@ -23,12 +23,12 @@ public class WallLampScript : TogglableObject {
         light.ToggleLight();
     }
 
-    protected override void TurnOff() {
+    public override void TurnOff() {
         light.TurnOff();
         activated = false;
     }
 
-    protected override void TurnOn() {
+    public override void TurnOn() {
         light.TurnOn();
         activated = true;
     }

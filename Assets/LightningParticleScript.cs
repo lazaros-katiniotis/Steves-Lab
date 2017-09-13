@@ -34,7 +34,7 @@ public class LightningParticleScript : MonoBehaviour {
         main.startLifetime = (distance / velocity) + 1;
 
         var trigger = ps.trigger;
-        trigger.SetCollider(0, script.affectedObjects[0].GetColliderTransform());
+        trigger.SetCollider(0, script.affectedObjects[0].GetParticleColliderTransform());
     }
 
 

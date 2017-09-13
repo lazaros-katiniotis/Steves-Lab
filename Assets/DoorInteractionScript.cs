@@ -17,6 +17,7 @@ public class DoorInteractionScript : MonoBehaviour {
         switch (tag) {
             case "Player":
             Debug.Log("Player is Inside Door AoI!");
+            doorScript.TurnOn();
             break;
         }
     }
@@ -28,6 +29,7 @@ public class DoorInteractionScript : MonoBehaviour {
         switch (tag) {
             case "Player":
             Debug.Log("Player exited Inside Door AoI!");
+            doorScript.TurnOff();
             break;
         }
     }

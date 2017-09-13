@@ -16,11 +16,11 @@ public class OxygenMachineScript : TerminalScript {
         ToggleTerminalFunction(GameManager.GetInstance().player);
     }
 
-    protected override void TurnOn() {
+    public override void TurnOn() {
 
     }
 
-    protected override void TurnOff() {
+    public override void TurnOff() {
 
     }
 }

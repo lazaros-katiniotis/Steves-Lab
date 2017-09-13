@@ -23,11 +23,11 @@ public class DoorScript : TogglableObject {
 
     // Use this for initialization
     void Start() {
-        Lock();
-        if (activeOnStart) {
-            Unlock();
-            TurnOff();
-        }
+        //Lock();
+        //if (activeOnStart) {
+        //    Unlock();
+        //    TurnOff();
+        //}
     }
 
     public RoomScript GetNextRoom() {
@@ -44,49 +44,49 @@ public class DoorScript : TogglableObject {
     }
 
     void Update() {
-        if (shouldLockDoor) {
-            if (!isInsideDoorArea) {
-                Debug.Log("Should lock door, so since player is not inside door area im locking the door.");
-                Lock();
-                shouldLockDoor = false;
-            }
-        }
+        //if (shouldLockDoor) {
+        //    if (!isInsideDoorArea) {
+        //        Debug.Log("Should lock door, so since player is not inside door area im locking the door.");
+        //        Lock();
+        //        shouldLockDoor = false;
+        //    }
+        //}
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        //Debug.Log("OnTriggerEnter2D()");
-        if (enteredDoorArea) {
-            return;
-        }
-        if (!IsLocked() && !enteredDoorArea) {
-            if (collision.CompareTag("Player")) {
-                TurnOn();
-            }
-        }
-        enteredDoorArea = true;
+        ////Debug.Log("OnTriggerEnter2D()");
+        //if (enteredDoorArea) {
+        //    return;
+        //}
+        //if (!IsLocked() && !enteredDoorArea) {
+        //    if (collision.CompareTag("Player")) {
+        //        TurnOn();
+        //    }
+        //}
+        //enteredDoorArea = true;
     }
 
     private void OnTriggerStay2D(Collider2D collision) {
-        //Debug.Log("OnTriggerStay2D()");
-        if (!IsLocked()) {
-            if (collision.CompareTag("Player")) {
-                TurnOn();
-            }
-        }
-        isInsideDoorArea = true;
+        ////Debug.Log("OnTriggerStay2D()");
+        //if (!IsLocked()) {
+        //    if (collision.CompareTag("Player")) {
+        //        TurnOn();
+        //    }
+        //}
+        //isInsideDoorArea = true;
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
-        //Debug.Log("OnTriggerExit2D()");
-        if (!IsLocked() && !collision.gameObject.GetComponent<Collider2D>().IsTouching(this.GetComponent<Collider2D>())) {
-            if (collision.CompareTag("Player")) {
-                if (!lockWhenPlayerLeaves) {
-                    TurnOff();
-                }
-            }
-        }
-        isInsideDoorArea = false;
-        enteredDoorArea = false;
+        ////Debug.Log("OnTriggerExit2D()");
+        //if (!IsLocked() && !collision.gameObject.GetComponent<Collider2D>().IsTouching(this.GetComponent<Collider2D>())) {
+        //    if (collision.CompareTag("Player")) {
+        //        if (!lockWhenPlayerLeaves) {
+        //            TurnOff();
+        //        }
+        //    }
+        //}
+        //isInsideDoorArea = false;
+        //enteredDoorArea = false;
     }
 
     public void Lock() {
@@ -132,12 +132,12 @@ public class DoorScript : TogglableObject {
         return locked;
     }
 
-    protected override void TurnOn() {
+    public override void TurnOn() {
         closedSpriteTransform.gameObject.SetActive(false);
         openSpriteTransform.gameObject.SetActive(true);
     }
 
-    protected override void TurnOff() {
+    public override void TurnOff() {
         closedSpriteTransform.gameObject.SetActive(true);
         openSpriteTransform.gameObject.SetActive(false);
     }
