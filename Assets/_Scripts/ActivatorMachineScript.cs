@@ -17,21 +17,21 @@ public class ActivatorMachineScript : TerminalScript {
         light.enabled = activated;
     }
 
-    protected override void ToggleTerminalFunction(PlayerController player) {
+    protected override void ToggleTerminalFunction(Actor actor) {
         activated = !activated;
         lightningParticleSystem.SetActive(activated);
         foreach (TogglableObject obj in affectedObjects) {
             Debug.Log("Toggling: " + obj.transform.name);
-            obj.Toggle();
+            obj.Toggle(actor);
         }
     }
 
-    public override void Toggle() {
+    public override void Toggle(Actor actor) {
         if (firstTimeActivated) {
             TurnOn();
             firstTimeActivated = false;
         } else {
-            ToggleTerminalFunction(GameManager.GetInstance().player);
+            ToggleTerminalFunction(actor);
         }
     }
 

@@ -30,6 +30,6 @@ public abstract class TerminalScript : TogglableObject {
         }
     }
 
-    protected abstract void ToggleTerminalFunction(PlayerController player);
+    protected abstract void ToggleTerminalFunction(Actor actor);
 
 }

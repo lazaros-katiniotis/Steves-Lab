@@ -5,14 +5,13 @@ using UnityEngine;
 
 public class OxygenMachineScript : TerminalScript {
 
-    protected override void ToggleTerminalFunction(PlayerController player) {
+    protected override void ToggleTerminalFunction(Actor actor) {
         foreach (TogglableObject obj in affectedObjects) {
             AirVentScript vent = obj.GetComponent<AirVentScript>();
-
         }
     }
 
-    public override void Toggle() {
+    public override void Toggle(Actor actor) {
         ToggleTerminalFunction(GameManager.GetInstance().player);
     }
 

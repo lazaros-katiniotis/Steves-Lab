@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class DoorMachineScript : TerminalScript {
 
-    private DoorScript doorScript;
+    private OldDoorScript doorScript;
 
     // Use this for initialization
     void Start() {
-        doorScript = GetComponentInParent<DoorScript>();
+        doorScript = GetComponentInParent<OldDoorScript>();
     }
 
     // Update is called once per frame
@@ -17,7 +17,8 @@ public class DoorMachineScript : TerminalScript {
 
     }
 
-    protected override void ToggleTerminalFunction(PlayerController player) {
+    protected override void ToggleTerminalFunction(Actor actor) {
+        PlayerController player = (PlayerController)actor;
         if (doorScript.IsLocked()) {
             if (player.GetInventory().HasItem(PickupObjectScript.PickupObjectType.KEYCARD)) {
                 player.GetInventory().RemoveItem(PickupObjectScript.PickupObjectType.KEYCARD);
@@ -29,8 +30,8 @@ public class DoorMachineScript : TerminalScript {
         }
     }
 
-    public override void Toggle() {
-        ToggleTerminalFunction(GameManager.GetInstance().player);
+    public override void Toggle(Actor actor) {
+        ToggleTerminalFunction(actor);
     }
 
     public override void TurnOn() {

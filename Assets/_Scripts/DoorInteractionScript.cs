@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class DoorInteractionScript : MonoBehaviour {
 
-    private NewDoorScript doorScript;
+    private DoorScript doorScript;
 
     private void Awake() {
-        doorScript = GetComponentInParent<NewDoorScript>();
+        doorScript = GetComponentInParent<DoorScript>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : Actor {
 
     private Rigidbody2D rb;
     public float speed = 5f;
@@ -188,12 +188,22 @@ public class PlayerController : MonoBehaviour {
             Debug.Log(lastInteractedObject.tag);
             switch (lastInteractedObject.tag) {
                 case "Door":
-                NewDoorScript doorScript = lastInteractedObject.GetComponentInParent<NewDoorScript>();
-                doorScript.Toggle();
+                DoorScript doorScript = lastInteractedObject.GetComponentInParent<DoorScript>();
+                bool toggle = false;
+                if (doorScript.IsLocked()) {
+                    if (GetInventory().HasItem(PickupObjectScript.PickupObjectType.KEYCARD)) {
+                        toggle = true;
+                    }
+                } else {
+                    toggle = true;
+                }
+                if (toggle) {
+                    doorScript.Toggle(this);
+                }
                 break;
                 case "Terminal":
                 TogglableObject obj = lastInteractedObject.GetComponentInParent<TogglableObject>();
-                obj.Toggle();
+                obj.Toggle(this);
                 break;
                 default:
                 break;
@@ -342,7 +352,7 @@ public class PlayerController : MonoBehaviour {
         return (playerHitPoints == 0);
     }
 
-    public InventoryManager GetInventory() {
+    public override InventoryManager GetInventory() {
         return inventoryManager;
     }
 

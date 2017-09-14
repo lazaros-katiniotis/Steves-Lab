@@ -5,7 +5,6 @@ using UnityEngine;
 
 public abstract class TogglableObject : MonoBehaviour, IParticleCollidable {
 
-    private Transform particleColliderTransform;
     public bool activeOnStart;
 
     protected bool activated;
@@ -20,16 +19,16 @@ public abstract class TogglableObject : MonoBehaviour, IParticleCollidable {
         firstTimeActivated = false;
     }
 
-    public abstract void Toggle();
+    public abstract void Toggle(Actor actor);
 
     public abstract void TurnOn();
 
     public abstract void TurnOff();
 
+    public abstract Component GetParticleColliderTransform();
+
     public bool IsActivated() {
         return activated;
     }
-
-    public abstract Component GetParticleColliderTransform();
 
 }

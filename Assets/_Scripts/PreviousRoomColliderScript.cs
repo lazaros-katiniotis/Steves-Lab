@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class PreviousRoomColliderScript : MonoBehaviour {
 
-    private DoorScript door;
+    private DoorScript doorScript;
 
     private void Start() {
-        door = this.transform.parent.GetComponent<DoorScript>();
+        doorScript = GetComponentInParent<DoorScript>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.CompareTag("Player")) {
-            collision.gameObject.GetComponent<PlayerController>().SetCurrentRoom(door.GetPreviousRoom());
+            collision.gameObject.GetComponent<PlayerController>().SetCurrentRoom(doorScript.GetPreviousRoom());
         }
     }
 }

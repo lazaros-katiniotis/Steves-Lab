@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour {
     private float messageElapsed = 0.0f;
     private float bannerElapsed = 0.0f;
 
-    private List<TerminalScript> terminals;
+    //private List<TerminalScript> terminals;
     private static GameManager instance;
     private Vector2 startPos;
 
@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour {
     }
 
     private void InitCurrentLevel() {
-        terminals = new List<TerminalScript>();
+        //terminals = new List<TerminalScript>();
         startColor = restartMessage.color;
         endColor = new Color(startColor.r, startColor.g, startColor.b, 1.0f);
         displayRestartMessage = false;
@@ -48,15 +48,15 @@ public class GameManager : MonoBehaviour {
 
     }
 
-    public void AddTerminal(DoorScript doorScript) {
-        if (doorScript.GetTerminalScript() != null) {
-            terminals.Add(doorScript.GetTerminalScript());
-        }
-    }
+    //public void AddTerminal(DoorScript doorScript) {
+    //    if (doorScript.GetTerminalScript() != null) {
+    //        terminals.Add(doorScript.GetTerminalScript());
+    //    }
+    //}
 
-    public void AddTerminal(TerminalScript terminal) {
-        terminals.Add(terminal);
-    }
+    //public void AddTerminal(TerminalScript terminal) {
+    //    terminals.Add(terminal);
+    //}
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.Escape)) {
@@ -111,7 +111,7 @@ public class GameManager : MonoBehaviour {
         return instance;
     }
 
-    public List<TerminalScript> GetTerminals() {
-        return terminals;
-    }
+    //public List<TerminalScript> GetTerminals() {
+    //    return terminals;
+    //}
 }

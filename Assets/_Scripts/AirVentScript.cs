@@ -22,7 +22,7 @@ public class AirVentScript : TogglableObject {
 
     }
 
-    public override void Toggle() {
+    public override void Toggle(Actor actor) {
         activated = !activated;
         light.ToggleLight();
     }
