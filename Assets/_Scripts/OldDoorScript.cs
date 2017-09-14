@@ -133,12 +133,12 @@ public class OldDoorScript : TogglableObject {
         return locked;
     }
 
-    public override void TurnOn() {
+    public void TurnOn() {
         closedSpriteTransform.gameObject.SetActive(false);
         openSpriteTransform.gameObject.SetActive(true);
     }
 
-    public override void TurnOff() {
+    public void TurnOff() {
         closedSpriteTransform.gameObject.SetActive(true);
         openSpriteTransform.gameObject.SetActive(false);
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorInteractionScript : MonoBehaviour {
+public class MechanicalDoorInteractionScript : MonoBehaviour {
 
     private DoorScript doorScript;
 

@@ -34,11 +34,11 @@ public class DoorMachineScript : TerminalScript {
         ToggleTerminalFunction(actor);
     }
 
-    public override void TurnOn() {
+    public void TurnOn() {
 
     }
 
-    public override void TurnOff() {
+    public void TurnOff() {
 
     }
 

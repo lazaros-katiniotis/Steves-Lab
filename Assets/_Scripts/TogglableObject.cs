@@ -9,21 +9,13 @@ public abstract class TogglableObject : MonoBehaviour, IParticleCollidable {
 
     protected bool activated;
     protected bool firstTimeActivated;
-    protected bool interactable;
 
     private void Awake() {
+        firstTimeActivated = false;
         activated = activeOnStart;
     }
 
-    void Start() {
-        firstTimeActivated = false;
-    }
-
     public abstract void Toggle(Actor actor);
-
-    public abstract void TurnOn();
-
-    public abstract void TurnOff();
 
     public abstract Component GetParticleColliderTransform();
 
