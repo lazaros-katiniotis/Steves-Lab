@@ -7,7 +7,7 @@
 // - in this script                                                  -
 // -------------------------------------------------------------------
 
-/*
+
 using UnityEngine;
 using UnityEditor;  // Most of the utilities we are going to use are contained in the UnityEditor namespace
 
@@ -26,11 +26,15 @@ internal sealed class CustomAssetImporter : AssetPostprocessor {
     // This event is raised when a texture asset is imported
     private void OnPreprocessTexture() {
         // I prefix my texture asset's file names with tex, following 3 lines say "if tex is not in the asset file name, do nothing"
+
+        /*
         var fileNameIndex = assetPath.LastIndexOf('/');
         var fileName = assetPath.Substring(fileNameIndex + 1);
-
+        Debug.Log("fileNameIndex: " + fileNameIndex);
+        Debug.Log("fileName: " + fileName);
         if (!fileName.Contains("tex"))
             return;
+        */
 
         // Get the reference to the assetImporter (From the AssetPostProcessor class) and unbox it to a TextureImporter (Which is inherited and extends the AssetImporter with texture specific utilities)
         var importer = assetImporter as TextureImporter;
@@ -39,26 +43,26 @@ internal sealed class CustomAssetImporter : AssetPostprocessor {
         // Unity API provides neat single function settings for the most import settings as SetPlatformTextureSettings
         // Parameters are: platform, maxTextureSize, textureFormat, compressionQuality
         // I also change the format based on if the texture has an alpha channel or not because not all formats support an alpha channel
-
-        //importer.SetPlatformTextureSettings("Web", webTextureSize,
-        //        importer.DoesSourceTextureHaveAlpha() ? TextureImporterFormat.DXT5 : TextureImporterFormat.DXT1, 100);
-
-        //importer.SetPlatformTextureSettings("Standalone", standaloneTextureSize,
-        //        importer.DoesSourceTextureHaveAlpha() ? TextureImporterFormat.DXT5 : TextureImporterFormat.DXT1, 100);
-
-        //importer.SetPlatformTextureSettings("iPhone", iosTextureSize,
-        //        importer.DoesSourceTextureHaveAlpha() ? TextureImporterFormat.PVRTC_RGBA4 : TextureImporterFormat.PVRTC_RGB4, 100);
-
-        //importer.SetPlatformTextureSettings("Android", androidTextureSize, TextureImporterFormat.ETC_RGB4, 100);
+        TextureImporterPlatformSettings settings = new TextureImporterPlatformSettings();
+        settings.format = TextureImporterFormat.RGBA32;
+        settings.maxTextureSize = 32;
+        settings.overridden = true;
+        //settings.compressionQuality = 100;
+        settings.textureCompression = TextureImporterCompression.Uncompressed;
+        importer.SetPlatformTextureSettings(settings);
 
         // Set the texture import type drop-down to advanced so our changes reflect in the import settings inspector
-        importer.textureType = TextureImporterType.Default;
+        importer.textureType = TextureImporterType.Sprite;
         // Below line may cause problems with systems and plugins that utilize the textures (read/write them) like NGUI so comment it out based on your use-case
         importer.isReadable = false;
+        importer.wrapMode = TextureWrapMode.Repeat;
         importer.filterMode = FilterMode.Point;
-        importer.anisoLevel = 9;
+        importer.anisoLevel = 16;
+        importer.spriteImportMode = SpriteImportMode.Single;
         importer.spritePixelsPerUnit = 32;
-        importer.compressionQuality = 100;
+        importer.alphaIsTransparency = true;
+        //importer.compressionQuality = 100;
+        //importer.maxTextureSize = 32
 
         // If you are only using the alpha channel for transparency, uncomment the below line. I commented it out because I use the alpha channel for various shaders (e.g. specular map or various other masks)
         //importer.alphaIsTransparency = importer.DoesSourceTextureHaveAlpha();
@@ -138,4 +142,3 @@ internal sealed class CustomAssetImporter : AssetPostprocessor {
 
     #endregion
 }
-*/

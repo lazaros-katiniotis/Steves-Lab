@@ -191,6 +191,10 @@ public class PlayerController : MonoBehaviour {
                 NewDoorScript doorScript = lastInteractedObject.GetComponentInParent<NewDoorScript>();
                 doorScript.Toggle();
                 break;
+                case "Terminal":
+                TogglableObject obj = lastInteractedObject.GetComponentInParent<TogglableObject>();
+                obj.Toggle();
+                break;
                 default:
                 break;
             }

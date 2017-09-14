@@ -60,4 +60,8 @@ public class ActivatorMachineScript : TerminalScript {
     //        obj.TurnOff();
     //    }
     //}
+
+    public override Component GetParticleColliderTransform() {
+        throw new NotImplementedException();
+    }
 }

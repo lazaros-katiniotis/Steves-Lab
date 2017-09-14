@@ -48,6 +48,7 @@ public class LightningParticleScript : MonoBehaviour {
             p.angularVelocity = 0;
             p.remainingLifetime = 0.25f;
             enter[i] = p;
+            Debug.Log("TEST!");
         }
         ps.SetTriggerParticles(ParticleSystemTriggerEventType.Enter, enter);
     }

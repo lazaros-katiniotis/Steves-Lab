@@ -23,4 +23,8 @@ public class OxygenMachineScript : TerminalScript {
     public override void TurnOff() {
 
     }
+
+    public override Component GetParticleColliderTransform() {
+        throw new NotImplementedException();
+    }
 }

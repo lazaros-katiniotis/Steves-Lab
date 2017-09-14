@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,5 +32,9 @@ public class WallLampScript : TogglableObject {
     public override void TurnOn() {
         light.TurnOn();
         activated = true;
+    }
+
+    public override Component GetParticleColliderTransform() {
+        throw new NotImplementedException();
     }
 }

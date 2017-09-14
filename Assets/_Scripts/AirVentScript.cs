@@ -44,4 +44,8 @@ public class AirVentScript : TogglableObject {
         light.TurnOff();
         room.CalculateOxygenationPercentage();
     }
+
+    public override Component GetParticleColliderTransform() {
+        throw new NotImplementedException();
+    }
 }

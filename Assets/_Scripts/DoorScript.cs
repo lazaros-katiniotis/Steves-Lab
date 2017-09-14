@@ -10,6 +10,7 @@ public class DoorScript : TogglableObject {
     public Transform openSpriteTransform;
     public Transform lockedLightTransform;
     public Transform unlockedLightTransform;
+    public Transform particleColliderTransform;
 
     public RoomScript previousRoom;
     public RoomScript nextRoom;
@@ -144,5 +145,9 @@ public class DoorScript : TogglableObject {
 
     public void LockWhenPlayerLeaves() {
         lockWhenPlayerLeaves = true;
+    }
+
+    public override Component GetParticleColliderTransform() {
+        return particleColliderTransform;
     }
 }
