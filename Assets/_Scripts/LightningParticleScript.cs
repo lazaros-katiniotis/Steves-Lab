@@ -17,7 +17,7 @@ public class LightningParticleScript : MonoBehaviour {
     }
 
     void OnEnable() {
-        ActivatorMachineScript script = GetComponentInParent<ActivatorMachineScript>();
+        TerminalScript script = GetComponentInParent<TerminalScript>();
         this.affectedObjects = script.affectedObjects;
         ps = GetComponent<ParticleSystem>();
         Vector3 direction = this.transform.parent.transform.position - affectedObjects[0].transform.position;
