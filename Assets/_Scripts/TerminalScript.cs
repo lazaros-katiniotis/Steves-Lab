@@ -6,14 +6,22 @@ using UnityEngine;
 public class TerminalScript : TogglableObject {
 
     public List<TogglableObject> affectedObjects;
+    public List<LightningParticleScript> particleScriptList;
     public float duration = 30.0f;
     public Transform lightTransform;
+    public GameObject lightningParticleSystem;
 
     private bool startTimer;
     private float elapsed;
 
     private void Awake() {
+        particleScriptList = new List<LightningParticleScript>();
         lightTransform.gameObject.SetActive(false);
+        for (int i = 0; i < affectedObjects.Count; i++) {
+            LightningParticleScript script = Instantiate(lightningParticleSystem, this.transform).GetComponent<LightningParticleScript>();
+            script.Init(this, i);
+            particleScriptList.Add(script);
+        }
     }
 
     private void Start() {
@@ -41,6 +49,9 @@ public class TerminalScript : TogglableObject {
             startTimer = true;
             elapsed = 0;
             ToggleAffectedObjects(actor);
+            foreach (LightningParticleScript script in particleScriptList) {
+                script.gameObject.SetActive(true);
+            }
         } else {
             activated = false;
             startTimer = false;

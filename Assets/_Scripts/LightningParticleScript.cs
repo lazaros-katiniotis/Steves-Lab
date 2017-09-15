@@ -7,9 +7,11 @@ public class LightningParticleScript : MonoBehaviour {
 
     private List<TogglableObject> affectedObjects;
     private ParticleSystem ps;
-    List<ParticleSystem.Particle> enter = new List<ParticleSystem.Particle>();
+    private List<ParticleSystem.Particle> enter = new List<ParticleSystem.Particle>();
     private Vector3 particleVelocity = new Vector3(0, 0, 0);
     private Color32 finalColor;
+
+    private TerminalScript terminalScript;
 
     void Start() {
 
@@ -17,10 +19,14 @@ public class LightningParticleScript : MonoBehaviour {
     }
 
     void OnEnable() {
-        TerminalScript script = GetComponentInParent<TerminalScript>();
-        this.affectedObjects = script.affectedObjects;
+
+    }
+
+    public void Init(TerminalScript terminalScript, int affectedObjectIndex) {
+        this.affectedObjects = terminalScript.affectedObjects;
+        this.terminalScript = terminalScript;
         ps = GetComponent<ParticleSystem>();
-        Vector3 direction = this.transform.parent.transform.position - affectedObjects[0].transform.position;
+        Vector3 direction = this.transform.parent.transform.position - affectedObjects[affectedObjectIndex].transform.position;
         float distance = Mathf.Sqrt(direction.x * direction.x + direction.y * direction.y);
         var vel = ps.velocityOverLifetime;
         vel.x = -direction.x * 20f / distance;
@@ -33,8 +39,12 @@ public class LightningParticleScript : MonoBehaviour {
         float velocity = Mathf.Sqrt(particleVelocity.x * particleVelocity.x + particleVelocity.y * particleVelocity.y);
         main.startLifetime = (distance / velocity) + 1;
 
+        ParticleSystem.Burst[] bursts = new ParticleSystem.Burst[1];
+        bursts[0] = new ParticleSystem.Burst(0.0f, 1, 1, 0, Random.Range(3.25f, 3.75f));
+        ps.emission.SetBursts(bursts);
+
         var trigger = ps.trigger;
-        trigger.SetCollider(0, script.affectedObjects[0].GetParticleColliderTransform());
+        trigger.SetCollider(0, terminalScript.affectedObjects[affectedObjectIndex].GetParticleColliderTransform());
     }
 
 
@@ -53,6 +63,10 @@ public class LightningParticleScript : MonoBehaviour {
     }
 
     void Update() {
-
+        if (!terminalScript.IsActivated()) {
+            if (ps.particleCount == 0) {
+                this.gameObject.SetActive(false);
+            }
+        }
     }
 }
