@@ -13,6 +13,6 @@ public class DrawOrderScript : MonoBehaviour {
     }
 
     void LateUpdate() {
-        spriteRenderer.sortingOrder = baseSortingOrder - (int)(10 * this.transform.position.y);
+        spriteRenderer.sortingOrder = baseSortingOrder - (int)(100 * this.transform.position.y);
     }
 }

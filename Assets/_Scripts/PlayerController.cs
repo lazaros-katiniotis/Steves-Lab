@@ -177,51 +177,11 @@ public class PlayerController : Actor {
             CheckIfDead();
         }
         if (Input.GetButtonDown("Use")) {
-
-            //get
-            //GameObject lastInteractedObject = interactionScript.GetLastObjectInteracted();
-
             if (lastInteractedObject == null) {
                 return;
             }
-            Debug.Log(lastInteractedObject);
-            Debug.Log(lastInteractedObject.tag);
             TogglableObject obj = lastInteractedObject.GetComponentInParent<TogglableObject>();
             obj.Toggle(this);
-
-            //switch (lastInteractedObject.tag) {
-            //    case "Door":
-            //    DoorScript doorScript = lastInteractedObject.GetComponentInParent<DoorScript>();
-            //    bool toggle = false;
-            //    if (!doorScript.IsActivated()) {
-            //        if (GetInventory().HasItem(PickupObjectScript.PickupObjectType.KEYCARD)) {
-            //            toggle = true;
-            //        }
-            //    } else {
-            //        toggle = true;
-            //    }
-            //    if (toggle) {
-            //        doorScript.Toggle(this);
-            //    }
-            //    break;
-            //    case "Terminal":
-            //    TogglableObject obj = lastInteractedObject.GetComponentInParent<TogglableObject>();
-            //    obj.Toggle(this);
-            //    break;
-            //    default:
-            //    break;
-            //}
-
-            /*
-            foreach (TerminalScript obj in GameManager.GetInstance().GetTerminals()) {
-                float xDelta = Mathf.Abs(obj.transform.position.x - this.transform.position.x);
-                float yDelta = Mathf.Abs(obj.transform.position.y - this.transform.position.y);
-                float distance = Mathf.Sqrt(xDelta * xDelta + yDelta * yDelta);
-                if (distance < 1.0f) {
-                    obj.Toggle();
-                }
-            }
-            */
         }
 
         h = Input.GetAxisRaw("Horizontal");
