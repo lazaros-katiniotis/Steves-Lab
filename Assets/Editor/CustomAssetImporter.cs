@@ -27,6 +27,9 @@ internal sealed class CustomAssetImporter : AssetPostprocessor {
     private void OnPreprocessTexture() {
         // I prefix my texture asset's file names with tex, following 3 lines say "if tex is not in the asset file name, do nothing"
 
+        if (true) {
+            return;
+        }
         /*
         var fileNameIndex = assetPath.LastIndexOf('/');
         var fileName = assetPath.Substring(fileNameIndex + 1);
