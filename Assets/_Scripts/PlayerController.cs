@@ -16,6 +16,7 @@ public class PlayerController : Actor {
     public float playerMaxHitPoints;
     public float playerHitPoints;
     public float playerOxygenLevel;
+    private bool oxygenDepleting;
 
     public RoomScript currentRoom;
 
@@ -251,22 +252,24 @@ public class PlayerController : Actor {
     }
 
     public void UpdatePlayerOxygenLevel() {
-        bool depleting = false;
+        oxygenDepleting = false;
         if (currentRoom == null) {
             playerOxygenLevel -= Time.deltaTime * 0.333f;
-            depleting = true;
+            oxygenDepleting = true;
         } else {
             if (currentRoom.GetCurrentOxygenPercent() <= 0.0f) {
                 playerOxygenLevel -= Time.deltaTime * 0.0333f;
-                depleting = true;
+                oxygenDepleting = true;
             } else if (currentRoom.GetCurrentOxygenPercent() < 1.0f) {
-                playerOxygenLevel += Time.deltaTime * 0.02f;
+                //playerOxygenLevel += Time.deltaTime * 0.075f;
+                playerOxygenLevel += Time.deltaTime * 0.333f;
             } else if (currentRoom.GetCurrentOxygenPercent() >= 1.0f) {
-                playerOxygenLevel += Time.deltaTime * 0.05f;
+                //playerOxygenLevel += Time.deltaTime * 0.075f;
+                playerOxygenLevel += Time.deltaTime * 0.333f;
             }
         }
 
-        if (depleting) {
+        if (oxygenDepleting) {
             oxygenBar.StartFlash();
         } else {
             oxygenBar.StopFlash();
@@ -332,5 +335,9 @@ public class PlayerController : Actor {
 
     public void SetLastInteractedObject(GameObject obj) {
         lastInteractedObject = obj;
+    }
+
+    public bool IsOxygenDepleting() {
+        return oxygenDepleting;
     }
 }
