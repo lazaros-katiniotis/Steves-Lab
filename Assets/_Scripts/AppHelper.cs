@@ -15,4 +15,9 @@ public static class AppHelper {
          Application.Quit();
 #endif
     }
+
+    public static float PingPong(float min, float max, float t) {
+        float length = max - min;
+        return (min + Mathf.PingPong(t, length));
+    }
 }

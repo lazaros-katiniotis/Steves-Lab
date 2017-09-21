@@ -254,7 +254,7 @@ public class PlayerController : Actor {
     public void UpdatePlayerOxygenLevel() {
         oxygenDepleting = false;
         if (currentRoom == null) {
-            playerOxygenLevel -= Time.deltaTime * 0.333f;
+            playerOxygenLevel -= Time.deltaTime * 0.0533f;
             oxygenDepleting = true;
         } else {
             if (currentRoom.GetCurrentOxygenPercent() <= 0.0f) {
@@ -262,10 +262,10 @@ public class PlayerController : Actor {
                 oxygenDepleting = true;
             } else if (currentRoom.GetCurrentOxygenPercent() < 1.0f) {
                 //playerOxygenLevel += Time.deltaTime * 0.075f;
-                playerOxygenLevel += Time.deltaTime * 0.333f;
+                playerOxygenLevel += Time.deltaTime * 0.5333f;
             } else if (currentRoom.GetCurrentOxygenPercent() >= 1.0f) {
                 //playerOxygenLevel += Time.deltaTime * 0.075f;
-                playerOxygenLevel += Time.deltaTime * 0.333f;
+                playerOxygenLevel += Time.deltaTime * 0.533f;
             }
         }
 

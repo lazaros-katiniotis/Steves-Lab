@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class DrawOrderScript : MonoBehaviour {
 
-    private SpriteRenderer spriteRenderer;
+    private Renderer renderer;
 
     public int baseSortingOrder;
 
     void Start() {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        renderer = GetComponent<Renderer>();
     }
 
     void LateUpdate() {
-        spriteRenderer.sortingOrder = baseSortingOrder - (int)(100 * this.transform.position.y);
+        renderer.sortingOrder = baseSortingOrder - (int)(100 * this.transform.position.y);
     }
 }

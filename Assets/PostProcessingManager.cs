@@ -23,7 +23,7 @@ public class PostProcessingManager : MonoBehaviour {
     private static int CURRENT = 1;
 
     public AnimationCurve oxygenatedCurve;
-    private float oxygenatedElapsed = 0.0f;
+    private float oxygenatedElapsed = 1.0f;
     private float deoxygenatedElapsed = 0.0f;
     private float prevSaturationValue = 0.0f;
     private float nextSaturationValue = 0.0f;
@@ -53,28 +53,47 @@ public class PostProcessingManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        UpdateSaturation();
+        if (player.IsDead()) {
+            ResetPostProcessingEffects();
+        } else {
+            OxygenationEffect();
+        }
     }
 
-    public void UpdateSaturation() {
-        float currentSaturationValue = GetSaturationValue();
+    public void OxygenationEffect() {
+        float currentSaturationValue = GetSaturationValue(CURRENT);
         if (player.IsOxygenDepleting()) {
-            deoxygenatedElapsed += Time.deltaTime / 8f;
-            nextSaturationValue = GetScaledSaturationValue(player.playerOxygenLevel, 0.55f, 1.05f);
-            currentSaturationValue = Mathf.Lerp(prevSaturationValue, nextSaturationValue, deoxygenatedElapsed);
             oxygenatedElapsed = 0.0f;
+            deoxygenatedElapsed += Time.deltaTime / 4f;
+            nextSaturationValue = GetScaledValue(player.playerOxygenLevel, 0.50f, 0.75f);
+            currentSaturationValue = Mathf.Lerp(prevSaturationValue, nextSaturationValue, deoxygenatedElapsed);
+
+            SetContrastValue(Mathf.Lerp(GetContrastValue(CURRENT), 1.0f, deoxygenatedElapsed * 4));
+            SetGrainIntensityValue(Mathf.Lerp(GetGrainIntensityValue(CURRENT), 0.6f - GetScaledValue(player.playerOxygenLevel, 0, 0.6f), deoxygenatedElapsed));
+            SetChromaticAbberationIntensityValue(Mathf.Lerp(GetChromaticAbberationIntensityValue(CURRENT), 0.75f - GetScaledValue(player.playerOxygenLevel, 0, 0.75f), deoxygenatedElapsed));
         } else {
-            oxygenatedElapsed += Time.deltaTime / 3;
-            float curveValue = Mathf.Clamp(oxygenatedCurve.Evaluate(oxygenatedElapsed), 0, 1);
-            nextSaturationValue = GetScaledSaturationValue(player.playerOxygenLevel + 2.5f * curveValue, 0.55f, 1.05f);
-            currentSaturationValue = Mathf.Lerp(prevSaturationValue, nextSaturationValue, oxygenatedElapsed);
             deoxygenatedElapsed = 0.0f;
+            oxygenatedElapsed += Time.deltaTime / 6f;
+            float curveValue = Mathf.Clamp(oxygenatedCurve.Evaluate(oxygenatedElapsed), 0, 1);
+            float oxygenValue = Mathf.Clamp(player.playerOxygenLevel + 2.5f * curveValue, 0, 2.5f);
+            nextSaturationValue = GetScaledValue(oxygenValue, 1.05f, 1.05f);
+            currentSaturationValue = Mathf.Lerp(prevSaturationValue, nextSaturationValue, oxygenatedElapsed);
+            SetContrastValue(GetScaledValue(curveValue, 1, 1.4f));
+            SetGrainIntensityValue(Mathf.Lerp(GetGrainIntensityValue(CURRENT), 0.0f, oxygenatedElapsed * 3f));
+            SetChromaticAbberationIntensityValue(Mathf.Lerp(GetChromaticAbberationIntensityValue(CURRENT), 0, oxygenatedElapsed * 3f));
         }
         SetSaturationValue(currentSaturationValue);
         prevSaturationValue = currentSaturationValue;
     }
 
-    public float GetScaledSaturationValue(float value, float min, float max) {
+    private void ResetPostProcessingEffects() {
+        SetSaturationValue(GetSaturationValue(DEFAULT));
+        SetContrastValue(GetContrastValue(DEFAULT));
+        SetGrainIntensityValue(GetGrainIntensityValue(DEFAULT));
+        SetChromaticAbberationIntensityValue(GetChromaticAbberationIntensityValue(DEFAULT));
+    }
+
+    public float GetScaledValue(float value, float min, float max) {
         float range = max - min;
         float newValue = min + value * range;
         return newValue;
@@ -85,9 +104,36 @@ public class PostProcessingManager : MonoBehaviour {
         currentProfile.colorGrading.settings = colorGradingSettings[CURRENT];
     }
 
-    public float GetSaturationValue() {
-        return colorGradingSettings[CURRENT].basic.saturation;
+    public float GetSaturationValue(int id) {
+        return colorGradingSettings[id].basic.saturation;
     }
 
+    public void SetContrastValue(float value) {
+        colorGradingSettings[CURRENT].basic.contrast = value;
+        currentProfile.colorGrading.settings = colorGradingSettings[CURRENT];
+    }
+
+    public float GetContrastValue(int id) {
+        return colorGradingSettings[id].basic.contrast;
+    }
+
+    public void SetGrainIntensityValue(float value) {
+        grainSettings[CURRENT].intensity = value;
+        currentProfile.grain.settings = grainSettings[CURRENT];
+    }
+
+    public float GetGrainIntensityValue(int id) {
+        return grainSettings[id].intensity;
+    }
+
+
+    public void SetChromaticAbberationIntensityValue(float value) {
+        chromaticAberrationSettings[CURRENT].intensity = value;
+        currentProfile.chromaticAberration.settings = chromaticAberrationSettings[CURRENT];
+    }
+
+    public float GetChromaticAbberationIntensityValue(int id) {
+        return chromaticAberrationSettings[id].intensity;
+    }
 
 }

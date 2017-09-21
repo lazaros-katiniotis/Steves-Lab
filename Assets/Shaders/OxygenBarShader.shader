@@ -67,7 +67,6 @@
 				fixed4 border = tex2D(_BorderTex, i.uv);
 				float c = 1 - tex2D(_CutoffTex, i.uv).x; 
 				fixed time = (sin(_Time.y*5)+1)/2;
-				_FlashValue = 1.0;
 				col = background;
 				if (_Cutoff > c) {
 					if (_FlashValue == 1.0 && fill.a != 0) {
