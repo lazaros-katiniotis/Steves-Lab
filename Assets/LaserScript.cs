@@ -11,9 +11,9 @@ public class LaserScript : MonoBehaviour {
 
     private LineRenderer lineRenderer;
 
-    private float defaultWidth = 0.64f;
+    public float defaultWidth;
+    public float nextWidth;
     private float currentWidth;
-    private float nextWidth = 0.73f;
 
     private Vector3 laserPointPosition;
     private Vector3 sparkPosition;
@@ -35,7 +35,7 @@ public class LaserScript : MonoBehaviour {
     }
 
     private void LaserWidthAnimation() {
-        widthElapsed += Time.deltaTime * Random.Range(0.05f, 0.15f);
+        widthElapsed += Time.deltaTime * 3.0f;
         currentWidth = AppHelper.PingPong(defaultWidth, nextWidth, widthElapsed);
         lineRenderer.widthMultiplier = currentWidth;
     }
