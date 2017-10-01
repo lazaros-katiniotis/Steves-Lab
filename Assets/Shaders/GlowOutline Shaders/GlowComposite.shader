@@ -17,7 +17,7 @@ Shader "Custom/GlowComposite"
 		//Cull Off 
 		ZWrite Off
 		ZTest Always
-
+		//Blend SrcAlpha OneMinusSrcAlpha 
 		Pass
 		{
 			CGPROGRAM
@@ -61,17 +61,18 @@ Shader "Custom/GlowComposite"
 			sampler2D _GlowBlurTex;
 			sampler2D _PlayerTex;
 			float _Intensity;
-			float _Cutoff;
+			//float _Cutoff;
 
 			fixed4 frag (v2f i) : SV_Target
 			{
 				fixed4 col = tex2D(_MainTex, i.uv0);
-				fixed4 player = tex2D(_PlayerTex, i.uv0);
-
-				//fixed4 glow = max(0, _Cutoff * tex2D(_GlowPrePassTex, i.uv1) - tex2D(_GlowBlurTex, i.uv1));
-				fixed4 glow = player;
-				//return col + glow * _Intensity;
-				return glow;
+				fixed4 player = tex2D(_PlayerTex, i.uv1);
+				fixed4 prePass = tex2D(_GlowPrePassTex, i.uv1);
+				fixed4 glowBlur = tex2D(_GlowBlurTex, i.uv1);
+				prePass = prePass - player * prePass;
+				glowBlur = glowBlur + player * glowBlur;
+				fixed4 glow = max(0, (prePass - glowBlur));
+				return col + glow * _Intensity;
 			}
 			ENDCG
 		}

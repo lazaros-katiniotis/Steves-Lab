@@ -4,8 +4,17 @@ using UnityEngine;
 
 public class InteractionScript : MonoBehaviour {
 
+    private GlowComposite glowCompositeScript;
+
+    private void Awake() {
+        glowCompositeScript = Camera.main.GetComponent<GlowComposite>();
+    }
+
     private void OnTriggerEnter2D(Collider2D collision) {
+
         GameObject obj = collision.transform.parent.gameObject;
+        GetComponentInParent<GlowableObject>().StartGlow();
+        //glowCompositeScript.StartGlow();
         string tag = obj.tag;
         switch (tag) {
             case "Player":
@@ -16,8 +25,14 @@ public class InteractionScript : MonoBehaviour {
         }
     }
 
+    //private void OnTriggerStay2D(Collider2D collision) {
+    //    GetComponentInParent<GlowableObject>().StartGlow();
+    //}
+
     private void OnTriggerExit2D(Collider2D collision) {
         GameObject obj = collision.transform.parent.gameObject;
+        GetComponentInParent<GlowableObject>().EndGlow();
+        //glowCompositeScript.EndGlow();
         string tag = obj.tag;
         switch (tag) {
             case "Player":

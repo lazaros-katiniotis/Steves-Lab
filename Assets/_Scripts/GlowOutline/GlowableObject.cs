@@ -9,35 +9,60 @@ public class GlowableObject : MonoBehaviour {
     public float lerpFactor;
     public Renderer[] renderers;
     [Range(0, 1)]
-    public float cutoff;
+    public float targetCutoff;
+    private float currentCutoff;
+    private float cutoffFactor = 1;
+    private float cutoffElapsed = 0;
 
     private List<Material> materials;
     private Color currentColor;
     private Color targetColor;
 
-	void Start () {
-        renderers = GetComponentsInChildren<Renderer>();
+    private GlowComposite glowCompositeScript;
+
+    void Start() {
+        renderers = GetComponentsInChildren<Renderer>(true);
         materials = new List<Material>();
+        glowCompositeScript = Camera.main.GetComponent<GlowComposite>();
         foreach (Renderer renderer in renderers) {
             materials.AddRange(renderer.materials);
         }
-	}
+    }
 
-    private void OnMouseEnter() {
+    public void StartGlow() {
         targetColor = glowColor;
+        targetCutoff = 1.0f;
+        //currentCutoff = 1.0f;
+        cutoffFactor = 5;
+        cutoffElapsed = 0.0f;
     }
 
-    private void OnMouseExit() {
-        targetColor = Color.black;
+    public void EndGlow() {
+        //targetColor = Color.black;
+        targetColor = glowColor;
+        targetCutoff = 0.0f;
+        cutoffFactor = 7.5f;
+        cutoffElapsed = 0.0f;
     }
 
-    // Update is called once per frame
-    void Update () {
-        currentColor = Color.Lerp(currentColor, targetColor, Time.deltaTime * lerpFactor);
-
+    void Update() {
+        cutoffElapsed += Time.deltaTime * cutoffFactor;
+        //currentColor = Color.Lerp(currentColor, targetColor, cutoffElapsed);
+        //currentColor = targetColor;
+        currentColor = glowColor;
+        currentCutoff = Mathf.Lerp(currentCutoff, targetCutoff, cutoffElapsed);
         for (int i = 0; i < materials.Count; i++) {
             materials[i].SetColor("_GlowColor", currentColor);
-            materials[i].SetFloat("_Cutoff", cutoff);
+            materials[i].SetFloat("_Cutoff", currentCutoff);
         }
     }
+
+    //private IEnumerator ResetCutoff() {
+    //    while (targetCutoff < 0.01f) {
+    //        targetCutoff = glowCompositeScript.GetCurrentCutoff();
+    //        yield return null;
+    //    }
+    //    targetCutoff = 0.0f;
+    //    yield return null;
+    //}
 }

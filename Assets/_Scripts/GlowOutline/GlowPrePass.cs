@@ -26,7 +26,7 @@ public class GlowPrePass : MonoBehaviour {
 
         prePass = CreateRenderTexture(camera.pixelWidth, camera.pixelHeight, 0, 24, FilterMode.Point);
         prePass.antiAliasing = 1;
-        blurred = CreateRenderTexture(camera.pixelWidth, camera.pixelHeight, 2, 24, FilterMode.Bilinear);
+        blurred = CreateRenderTexture(camera.pixelWidth, camera.pixelHeight, 1, 24, FilterMode.Bilinear);
 
         camera.targetTexture = prePass;
         camera.SetReplacementShader(glowShader, "Glowable");

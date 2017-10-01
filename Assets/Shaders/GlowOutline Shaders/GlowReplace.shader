@@ -43,11 +43,11 @@
 			fixed4 frag (v2f i) : SV_Target
 			{
 				fixed4 col = tex2D(_MainTex, i.uv);
-				col = col * _Cutoff;
+				//col = col * _Cutoff;
 				if (col.a == 0) {
 					discard;
 				}
-				return _GlowColor;
+				return max(1 - _Cutoff, 1 - _GlowColor);
 			}
 			ENDCG
 		}
