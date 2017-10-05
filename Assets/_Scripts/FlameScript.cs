@@ -18,7 +18,8 @@ public class FlameScript : MonoBehaviour {
         }
         if (insideFlames) {
             if (!player.WasRecentlyHurt()) {
-                player.Hurt(10);
+                //player.Hurt(10, 1.0f);
+                StartCoroutine(player.Hurt(10, 1.0f));
             }
         }
     }

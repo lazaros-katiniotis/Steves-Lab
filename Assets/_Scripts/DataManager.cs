@@ -6,16 +6,15 @@ using UnityEngine;
 public class DataManager : MonoBehaviour {
 
     public List<string> scenes;
-
-    private int levelIndex = 0;
-
     public static DataManager instance;
-
-    private bool gameJustStarted = true;
 
     public AudioClip song;
     private AudioSource audio;
     private float songDelay;
+
+    private int levelIndex = 0;
+    private bool gameJustStarted = true;
+
 
     // Use this for initialization
     void Start() {

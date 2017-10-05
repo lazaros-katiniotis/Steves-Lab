@@ -11,8 +11,8 @@ public class NextRoomColliderScript : MonoBehaviour {
     }
 
     private void OnTriggerStay2D(Collider2D collision) {
-        if (collision.CompareTag("Player")) {
-            collision.gameObject.GetComponent<PlayerController>().SetCurrentRoom(doorScript.GetNextRoom());
-        }
+        //if (collision.CompareTag("Player")) {
+            collision.gameObject.GetComponentInParent<PlayerController>().SetCurrentRoom(doorScript.GetNextRoom());
+        //}
     }
 }

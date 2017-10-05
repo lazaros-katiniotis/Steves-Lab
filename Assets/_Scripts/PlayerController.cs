@@ -18,6 +18,9 @@ public class PlayerController : Actor {
     public float playerOxygenLevel;
     private bool oxygenDepleting;
 
+    public Transform pickupTransform;
+    private BoxCollider2D pickupCollider;
+
     public RoomScript currentRoom;
 
     //public TextMeshProUGUI roomOxygenText;
@@ -31,7 +34,6 @@ public class PlayerController : Actor {
 
     public List<Texture> animationNormals;
     private Material material;
-    private bool dead = false;
 
     public HealthBarScript healthBar;
     public HealthBarScript oxygenBar;
@@ -40,11 +42,14 @@ public class PlayerController : Actor {
 
     private GameObject lastInteractedObject;
 
-    private float waitTimer;
-    private float waitDuration;
+    private float animationWaitTimer;
+    private float animationWaitDuration;
 
+    private bool dead = false;
     private bool hurt;
     private float hurtTimer;
+
+    private bool dazed;
 
     public enum AnimationState {
         RUN_UP, RUN_DOWN, RUN_LEFT, RUN_RIGHT, IDLE_UP, IDLE_DOWN, IDLE_LEFT, IDLE_RIGHT, DEATH, START, CONTINUE
@@ -55,6 +60,7 @@ public class PlayerController : Actor {
 
     private void Awake() {
         //interactionScript = GetComponentInChildren<PlayerInteractionScript>();
+        pickupCollider = pickupTransform.GetComponent<BoxCollider2D>();
     }
 
     void Start() {
@@ -68,13 +74,13 @@ public class PlayerController : Actor {
             prevAnimationState = AnimationState.START;
             currentAnimationState = AnimationState.START;
             animator.Play("PlayerStart");
-            waitDuration = 4.5f;
+            animationWaitDuration = 4.5f;
             DataManager.GetInstance().SetGameJustStarted(false);
         } else {
             animator.Play("PlayerContinue");
             prevAnimationState = AnimationState.CONTINUE;
             currentAnimationState = AnimationState.CONTINUE;
-            waitDuration = 0.6f;
+            animationWaitDuration = 0.6f;
         }
     }
 
@@ -101,9 +107,43 @@ public class PlayerController : Actor {
         return hurt;
     }
 
-    public void Hurt(int damage) {
-        hurt = true;
-        playerHitPoints -= damage;
+    //public void Hurt(int damage) {
+    //    hurt = true;
+    //    playerHitPoints -= damage;
+    //}
+
+    public IEnumerator Hurt(int damage, float duration) {
+        float elapsed = 0.0f;
+        if (hurt == false) {
+            hurt = true;
+            playerHitPoints -= damage;
+            while (elapsed < duration) {
+                elapsed += Time.deltaTime;
+                yield return null;
+                hurt = false;
+            }
+        }
+        yield return null;
+    }
+
+    private Vector2 knockbackForce;
+    private Vector2 currentKnockbackForce;
+
+    public void Knockback(Vector2 force) {
+        knockbackForce = force;
+        currentKnockbackForce = force;
+        StartCoroutine(Daze(0.25f));
+    }
+
+    private IEnumerator Daze(float duration) {
+        dazed = true;
+        float elapsed = 0.0f;
+        while (elapsed < duration) {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        dazed = false;
+        yield return null;
     }
 
     public bool IsHealthFull() {
@@ -133,19 +173,10 @@ public class PlayerController : Actor {
         oxygenBar.SetCutoffValue(playerOxygenLevel);
         oxygenBar.SetHighlightValue(playerOxygenLevel);
 
-        waitTimer += Time.deltaTime;
-        if (waitTimer < waitDuration) {
+        animationWaitTimer += Time.deltaTime;
+        if (animationWaitTimer < animationWaitDuration) {
             return;
         }
-
-        if (WasRecentlyHurt()) {
-            hurtTimer += Time.deltaTime;
-            if (hurtTimer > 1.0f) {
-                hurt = false;
-                hurtTimer = 0.0f;
-            }
-        }
-
 
         CheckIfDead();
         if (dead) {
@@ -326,9 +357,13 @@ public class PlayerController : Actor {
         if (dead) {
             return;
         }
-        //Debug.Log("force: " + movementDirection * speed);
-        //rb.AddForce(movementDirection * speed);
-
+        rb.AddForce(currentKnockbackForce);
+        currentKnockbackForce *= 0.75f;
+        bool xAxis = currentKnockbackForce.x < (knockbackForce.x / 2);
+        bool yAxis = currentKnockbackForce.y < (knockbackForce.y / 2);
+        if (dazed) {
+            velocity = Vector2.zero;
+        }
         rb.MovePosition(rb.position + velocity);
 
     }
@@ -339,5 +374,13 @@ public class PlayerController : Actor {
 
     public bool IsOxygenDepleting() {
         return oxygenDepleting;
+    }
+
+    public Vector2 GetMovementDirection() {
+        return movementDirection;
+    }
+
+    public BoxCollider2D GetPickupCollider() {
+        return pickupCollider;
     }
 }
