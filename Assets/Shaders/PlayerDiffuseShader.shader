@@ -1,11 +1,13 @@
 ﻿// Unity built-in shader source. Copyright (c) 2016 Unity Technologies. MIT license (see license.txt)
 
-Shader "Custom/DiffuseShader"
+Shader "Custom/PlayerDiffuseShader"
 {
     Properties
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
+        _HurtColor ("Hurt Color", Color) = (1,1,1,1)
+		_HurtCutoff("HurtCutoff", Range(0, 1)) = 0
         [MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
         [HideInInspector] _RendererColor ("RendererColor", Color) = (1,1,1,1)
         [HideInInspector] _Flip ("Flip", Vector) = (1,1,1,1)
@@ -53,10 +55,14 @@ Shader "Custom/DiffuseShader"
             o.color = v.color * _Color * _RendererColor;
         }
 
+		fixed _HurtCutoff;
+		fixed4 _HurtColor;
+
         void surf (Input IN, inout SurfaceOutput o)
         {
             fixed4 c = SampleSpriteTexture (IN.uv_MainTex) * IN.color;
-            o.Albedo = c.rgb * c.a;
+            o.Albedo = (c.rgb + _HurtColor*_HurtCutoff) * c.a;
+			//o.Albedo = 0.Albedo + _Color;
             o.Alpha = c.a;
         }
         ENDCG

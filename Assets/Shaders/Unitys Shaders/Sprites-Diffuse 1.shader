@@ -65,7 +65,7 @@ Shader "Custom/DiffuseEdit"
         {
             fixed4 c = SampleSpriteTexture (IN.uv_MainTex) * IN.color;
             o.Albedo = c.rgb * c.a;
-
+			//o.Albedo = o.Albedo + _Color;
 			//o.Normal = UnpackNormal(tex2D (_BumpMap, IN.uv_BumpMap));
             o.Alpha = c.a;
         }

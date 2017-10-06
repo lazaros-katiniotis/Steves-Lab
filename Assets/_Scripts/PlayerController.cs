@@ -45,10 +45,9 @@ public class PlayerController : Actor {
     private float animationWaitTimer;
     private float animationWaitDuration;
 
+    public AnimationCurve hurtCurve;
     private bool dead = false;
     private bool hurt;
-    private float hurtTimer;
-
     private bool dazed;
 
     public enum AnimationState {
@@ -114,14 +113,20 @@ public class PlayerController : Actor {
 
     public IEnumerator Hurt(int damage, float duration) {
         float elapsed = 0.0f;
+        Color alphaColor = Color.white;
         if (hurt == false) {
             hurt = true;
             playerHitPoints -= damage;
             while (elapsed < duration) {
                 elapsed += Time.deltaTime;
+                float cutoff = hurtCurve.Evaluate(elapsed / duration);
+                float alpha = (Mathf.Sign(Mathf.Sin(10 * Mathf.PI * elapsed / duration)) + 1) / 2.0f;
+                material.SetFloat("_HurtCutoff", cutoff);
+                alphaColor.a = alpha;
+                material.SetColor("_Color", alphaColor);
                 yield return null;
-                hurt = false;
             }
+            hurt = false;
         }
         yield return null;
     }

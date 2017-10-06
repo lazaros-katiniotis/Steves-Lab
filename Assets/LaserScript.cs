@@ -107,6 +107,7 @@ public class LaserScript : MonoBehaviour {
             } else {
                 player.Knockback(perpendicular * 10000);
             }
+            StartCoroutine(player.Hurt(0, 1.0f));
         }
     }
 }
