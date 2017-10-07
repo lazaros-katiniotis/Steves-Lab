@@ -114,13 +114,24 @@ public class PlayerController : Actor {
     public IEnumerator Hurt(int damage, float duration) {
         float elapsed = 0.0f;
         Color alphaColor = Color.white;
+        float blinkSpeed = 12;
+        float currentBlinkSpeed = blinkSpeed;
         if (hurt == false) {
             hurt = true;
             playerHitPoints -= damage;
             while (elapsed < duration) {
                 elapsed += Time.deltaTime;
-                float cutoff = hurtCurve.Evaluate(elapsed / duration);
-                float alpha = (Mathf.Sign(Mathf.Sin(10 * Mathf.PI * elapsed / duration)) + 1) / 2.0f;
+                float scaledElapsed = elapsed / duration;
+                float cutoff = hurtCurve.Evaluate(scaledElapsed);
+                //if (scaledElapsed > 0.33f && scaledElapsed < 0.66f) {
+                //    blinkSpeed = 24;
+                //} else if (scaledElapsed >= 0.66f) {
+                //    blinkSpeed = 32;
+                //}
+                if (scaledElapsed >= 0.75f) {
+                    currentBlinkSpeed = 1.5f * blinkSpeed;
+                }
+                float alpha = (Mathf.Sign(Mathf.Sin(currentBlinkSpeed * Mathf.PI * scaledElapsed)) + 1) / 2.0f;
                 material.SetFloat("_HurtCutoff", cutoff);
                 alphaColor.a = alpha;
                 material.SetColor("_Color", alphaColor);
