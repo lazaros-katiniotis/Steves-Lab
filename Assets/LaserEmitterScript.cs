@@ -1,13 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LaserEmitterScript : MonoBehaviour {
+public class LaserEmitterScript : TogglableObject {
 
     public bool rotate;
     public float rotationSpeedMultiplier;
 
     private LaserScript laserBeam;
+
+    public override void Toggle(Actor actor) {
+        //if (!activated) {
+        //    activated = true;
+        //} else {
+        //    activated = false;
+        //}
+    }
 
     private void Awake() {
         laserBeam = GetComponentInChildren<LaserScript>();
@@ -22,5 +31,9 @@ public class LaserEmitterScript : MonoBehaviour {
         if (rotate) {
             laserBeam.LaserRotation(rotationSpeedMultiplier);
         }
+    }
+
+    public override Component GetParticleColliderTransform() {
+        throw new NotImplementedException();
     }
 }

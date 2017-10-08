@@ -25,8 +25,13 @@ public class LightningParticleScript : MonoBehaviour {
     public void Init(TerminalScript terminalScript, int affectedObjectIndex) {
         this.affectedObjects = terminalScript.affectedObjects;
         this.terminalScript = terminalScript;
+        Vector3 direction;
         ps = GetComponent<ParticleSystem>();
-        Vector3 direction = this.transform.parent.transform.position - affectedObjects[affectedObjectIndex].transform.position;
+        if (affectedObjects.Count != 0) {
+            direction = this.transform.parent.transform.position - affectedObjects[affectedObjectIndex].transform.position;
+        } else {
+            direction = Vector3.up;
+        }
         float distance = Mathf.Sqrt(direction.x * direction.x + direction.y * direction.y);
         var vel = ps.velocityOverLifetime;
         vel.x = -direction.x * 20f / distance;
@@ -63,9 +68,11 @@ public class LightningParticleScript : MonoBehaviour {
     }
 
     void Update() {
-        if (!terminalScript.IsActivated()) {
-            if (ps.particleCount == 0) {
-                this.gameObject.SetActive(false);
+        if (terminalScript != null) {
+            if (!terminalScript.IsActivated()) {
+                if (ps.particleCount == 0) {
+                    this.gameObject.SetActive(false);
+                }
             }
         }
     }
