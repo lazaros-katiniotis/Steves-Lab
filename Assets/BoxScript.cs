@@ -1,46 +1,44 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoxScript : MonoBehaviour {
+public class BoxScript : TogglableObject {
 
     private Rigidbody2D rb;
-    //private float collisionElapsed;
-    //private float duration = 0.5f;
-    //private Vector2 currentPosition;
-    //private Vector2 nextPosition;
-    //private bool startLerp;
+    private bool grabbed;
+    private Actor currentActor;
+    private Vector2 offset;
+
+    public override void Toggle(Actor actor) {
+        grabbed = !grabbed;
+        if (grabbed) {
+            Debug.Log("Object grabbed!");
+            currentActor = actor;
+            offset = transform.position - currentActor.transform.position;
+            currentActor.UpdateDraggingState(true, this);
+
+        } else {
+            Debug.Log("Object released.");
+            currentActor.UpdateDraggingState(false, null);
+            currentActor = null;
+        }
+    }
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
-        //currentPosition = rb.position;
-        //startLerp = false;
     }
 
     private void FixedUpdate() {
-        rb.MovePosition(rb.position);
-        //currentPosition = Vector2.Lerp(currentPosition, nextPosition, 10.0f * Time.deltaTime);
-        //rb.MovePosition(currentPosition);
+        if (grabbed) {
+            rb.MovePosition((Vector2)currentActor.transform.position + offset);
+        } else {
+            rb.MovePosition(rb.position);
+        }
     }
 
-    //private void OnCollisionEnter2D(Collision2D collision) {
-    //    //collisionElapsed = 0.0f;
-    //    //int i = 0;
-    //    //foreach (ContactPoint2D point in collision.contacts) {
-    //    //    Debug.Log(i++ + ": " + point.point);
-    //    //}
-    //}
+    public override Component GetParticleColliderTransform() {
+        throw new NotImplementedException();
+    }
 
-    //private void OnCollisionStay2D(Collision2D collision) {
-    //    //collisionElapsed += Time.deltaTime;
-    //    //Debug.Log("Player Position: (" + collision.transform.position.x + ", " + collision.transform.position.y + ")");
-    //    // Debug.Log("Box Position: (" + transform.position.x + ", " + transform.position.y + ")");
-    //    // Debug.Log("Contact Point: (" + collision.contacts[0].point.x + ", " + collision.contacts[0].point.y + ")");
-    //    //if (collisionElapsed >= duration) {
-    //    //    collisionElapsed -= duration;
-    //    //    //Debug.Log(collision.relativeVelocity);
-    //    //    nextPosition = rb.position + collision.relativeVelocity.normalized;
-
-    //    //}
-    //}
 }

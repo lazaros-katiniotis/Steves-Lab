@@ -15,10 +15,14 @@ public class RoomScript : MonoBehaviour {
     public Transform airVentsTransform;
     public Transform terminalsTransform;
     public Transform doorsTransform;
+    public Transform objectTransform;
 
     private List<AirVentScript> oxygenVents;
 
     private float oxygenationPercentage;
+    private float elapsed;
+
+    private List<BoxScript> boxes;
 
     // Use this for initialization
     void Start() {
@@ -34,8 +38,6 @@ public class RoomScript : MonoBehaviour {
 
         CalculateOxygenationPercentage();
     }
-
-    private float elapsed;
 
     // Update is called once per frame
     void Update() {

@@ -14,6 +14,7 @@ public class PlayerController : Actor {
     private Vector2 velocity;
 
     public float playerMaxHitPoints;
+    public float boxGrabRange;
     public float playerHitPoints;
     public float playerOxygenLevel;
     private bool oxygenDepleting;
@@ -49,6 +50,9 @@ public class PlayerController : Actor {
     private bool dead = false;
     private bool hurt;
     private bool dazed;
+    private bool dragging;
+    private TogglableObject objectDragged;
+
 
     public enum AnimationState {
         RUN_UP, RUN_DOWN, RUN_LEFT, RUN_RIGHT, IDLE_UP, IDLE_DOWN, IDLE_LEFT, IDLE_RIGHT, DEATH, START, CONTINUE
@@ -200,6 +204,14 @@ public class PlayerController : Actor {
             //roomOxygenText.text = "No Room";
         }
 
+        if (dragging) {
+            Vector3 delta = objectDragged.transform.position - this.transform.position;
+            float distance = Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y);
+            if (boxGrabRange < distance) {
+                objectDragged.Toggle(this);
+            }
+        }
+
         UpdatePlayerOxygenLevel();
         UpdatePlayerHitPoints();
 
@@ -220,10 +232,19 @@ public class PlayerController : Actor {
             CheckIfDead();
         }
         if (Input.GetButtonDown("Use")) {
+            TogglableObject obj = null;
             if (lastInteractedObject == null) {
+                BoxScript box;
+                float distance = GameManager.GetInstance().GetNearestBox(out box);
+                if (boxGrabRange > distance) {
+                    obj = box;
+                }
+            } else {
+                obj = lastInteractedObject.GetComponentInParent<TogglableObject>();
+            }
+            if (obj == null) {
                 return;
             }
-            TogglableObject obj = lastInteractedObject.GetComponentInParent<TogglableObject>();
             obj.Toggle(this);
         }
 
@@ -393,5 +414,10 @@ public class PlayerController : Actor {
 
     public BoxCollider2D GetPickupCollider() {
         return pickupCollider;
+    }
+
+    public override void UpdateDraggingState(bool isDragging, TogglableObject obj) {
+        dragging = isDragging;
+        objectDragged = obj;
     }
 }

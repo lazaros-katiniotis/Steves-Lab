@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour {
     private float messageElapsed = 0.0f;
     private float bannerElapsed = 0.0f;
 
-    //private List<TerminalScript> terminals;
+    private List<BoxScript> boxes;
     private static GameManager instance;
     private Vector2 startPos;
 
@@ -39,24 +39,38 @@ public class GameManager : MonoBehaviour {
     }
 
     private void InitCurrentLevel() {
-        //terminals = new List<TerminalScript>();
         startColor = restartMessage.color;
         endColor = new Color(startColor.r, startColor.g, startColor.b, 1.0f);
         displayRestartMessage = false;
         displayGameOverBanner = false;
-
-
+        GetBoxes();
     }
 
-    //public void AddTerminal(DoorScript doorScript) {
-    //    if (doorScript.GetTerminalScript() != null) {
-    //        terminals.Add(doorScript.GetTerminalScript());
-    //    }
-    //}
+    private void GetBoxes() {
+        boxes = new List<BoxScript>();
+        foreach (Transform room in currentLevelTransform.GetComponent<LevelScript>().roomsTransform) {
+            foreach (Transform obj in room.Find("OBJECTS")) {
+                BoxScript box = obj.GetComponent<BoxScript>();
+                if (box != null) {
+                    boxes.Add(box);
+                }
+            }
+        }
+    }
 
-    //public void AddTerminal(TerminalScript terminal) {
-    //    terminals.Add(terminal);
-    //}
+    public float GetNearestBox(out BoxScript nearestBox) {
+        nearestBox = null;
+        float minDistance = 100;
+        foreach (BoxScript box in boxes) {
+            Vector3 delta = player.transform.position - box.transform.position;
+            float distance = Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y);
+            if (distance <= minDistance) {
+                minDistance = distance;
+                nearestBox = box;
+            }
+        }
+        return minDistance;
+    }
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.Escape)) {
