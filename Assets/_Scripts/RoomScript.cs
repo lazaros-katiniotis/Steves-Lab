@@ -102,4 +102,8 @@ public class RoomScript : MonoBehaviour {
     public Transform GetTerminals() {
         return terminalsTransform;
     }
+
+    public Transform GetObjects() {
+        return objectTransform;
+    }
 }

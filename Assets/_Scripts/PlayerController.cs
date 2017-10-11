@@ -7,7 +7,6 @@ using TMPro;
 public class PlayerController : Actor {
 
     private Rigidbody2D rb;
-    public float speed = 5f;
     public GameObject inventory;
 
     private InventoryManager inventoryManager;
@@ -21,8 +20,6 @@ public class PlayerController : Actor {
 
     public Transform pickupTransform;
     private BoxCollider2D pickupCollider;
-
-    public RoomScript currentRoom;
 
     //public TextMeshProUGUI roomOxygenText;
     //public TextMeshProUGUI playerOxygenText;
@@ -50,7 +47,6 @@ public class PlayerController : Actor {
     private bool dead = false;
     private bool hurt;
     private bool dazed;
-    private bool dragging;
     private TogglableObject objectDragged;
 
 
@@ -177,10 +173,6 @@ public class PlayerController : Actor {
 
     }
 
-    public void SetCurrentRoom(RoomScript room) {
-        currentRoom = room;
-    }
-
     // Update is called once per frame
     void Update() {
         healthBar.SetValue("_Cutoff", playerHitPoints / playerMaxHitPoints);
@@ -235,9 +227,13 @@ public class PlayerController : Actor {
             TogglableObject obj = null;
             if (lastInteractedObject == null) {
                 BoxScript box;
-                float distance = GameManager.GetInstance().GetNearestBox(out box);
-                if (boxGrabRange > distance) {
-                    obj = box;
+                if (dragging) {
+                    obj = GetComponentInChildren<BoxScript>();
+                } else {
+                    float distance = GameManager.GetInstance().GetNearestBox(out box);
+                    if (boxGrabRange > distance) {
+                        obj = box;
+                    }
                 }
             } else {
                 obj = lastInteractedObject.GetComponentInParent<TogglableObject>();
