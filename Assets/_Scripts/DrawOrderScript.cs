@@ -6,6 +6,7 @@ public class DrawOrderScript : MonoBehaviour {
 
     private Renderer renderer;
 
+    public string layer;
     public int baseSortingOrder;
 
     void Start() {

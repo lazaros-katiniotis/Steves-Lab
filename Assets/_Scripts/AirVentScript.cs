@@ -32,7 +32,9 @@ public class AirVentScript : TogglableObject {
             room = transform.GetComponentInParent<RoomScript>();
         }
         activated = true;
-        light.TurnOn();
+        if (light) {
+            light.TurnOn();
+        }
         room.CalculateOxygenationPercentage();
     }
 
@@ -41,7 +43,9 @@ public class AirVentScript : TogglableObject {
             room = transform.GetComponentInParent<RoomScript>();
         }
         activated = false;
-        light.TurnOff();
+        if (light) {
+            light.TurnOff();
+        }
         room.CalculateOxygenationPercentage();
     }
 
