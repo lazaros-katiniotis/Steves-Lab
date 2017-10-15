@@ -4,16 +4,19 @@ using UnityEditor.Sprites;
 using UnityEngine;
 using UnityEngine.U2D;
 
-public class TestAtlasScript : MonoBehaviour {
+public class MaterialInitializer : MonoBehaviour {
 
     public string spriteAtlasName;
     public string spriteName;
 
+    //Create material with texture atlas using this:
+    //Texture tex = SpriteUtility.GetSpriteTexture(sprite, true);
+    //GetComponent<Renderer>().material.mainTexture = tex;
+
     void Start() {
         SpriteAtlas atlas = DataManager.GetInstance().GetSpriteAtlas(spriteAtlasName);
-        
+
         Sprite sprite = atlas.GetSprite(spriteName);
-        Texture tex = SpriteUtility.GetSpriteTexture(sprite, true);
         Rect spriteRect = sprite.textureRect;
 
         float x = spriteRect.x / sprite.texture.width;
