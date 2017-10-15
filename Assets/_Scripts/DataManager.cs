@@ -2,11 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class DataManager : MonoBehaviour {
 
     public List<string> scenes;
     public static DataManager instance;
+    public SpriteAtlas atlas;
 
     public AudioClip song;
     private AudioSource audio;
@@ -64,5 +66,9 @@ public class DataManager : MonoBehaviour {
 
     public void SetGameJustStarted(bool value) {
         gameJustStarted = value;
+    }
+
+    public SpriteAtlas GetSpriteAtlas(string spriteAtlasName) {
+        return atlas;
     }
 }

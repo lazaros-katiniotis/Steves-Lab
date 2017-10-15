@@ -4,11 +4,11 @@ Shader "Custom/DiffuseEdit"
 {
     Properties
     {
-        [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
+        _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
-        _BumpMap ("Normal Map", 2D) = "white" {}
-        [Gamma] _Metallic("Metallic", Range(0.0, 1.0)) = 1.0
-        [Gamma] _Smoothness("Smoothness", Range(0.0, 1.0)) = 0.1
+        //_BumpMap ("Normal Map", 2D) = "white" {}
+        //[Gamma] _Metallic("Metallic", Range(0.0, 1.0)) = 1.0
+        //[Gamma] _Smoothness("Smoothness", Range(0.0, 1.0)) = 0.1
         [MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
         [HideInInspector] _RendererColor ("RendererColor", Color) = (1,1,1,1)
         [HideInInspector] _Flip ("Flip", Vector) = (1,1,1,1)
