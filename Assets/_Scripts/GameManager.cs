@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour {
         boxes = new List<BoxScript>();
         foreach (Transform room in currentLevelTransform.GetComponent<LevelScript>().roomsTransform) {
             foreach (Transform obj in room.Find("OBJECTS")) {
+                Debug.Log(obj + ", " + obj.position);
                 BoxScript box = obj.GetComponent<BoxScript>();
                 if (box != null) {
                     boxes.Add(box);
@@ -62,6 +63,8 @@ public class GameManager : MonoBehaviour {
         nearestBox = null;
         float minDistance = 100;
         foreach (BoxScript box in boxes) {
+            Debug.Log("player pos: " + player.transform.position);
+            Debug.Log("box pos: " + box.transform.position);
             Vector3 delta = player.transform.position - box.transform.position;
             float distance = Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y);
             if (distance <= minDistance) {

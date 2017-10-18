@@ -11,8 +11,11 @@ public class InteractionScript : MonoBehaviour {
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-
-        GameObject obj = collision.transform.parent.gameObject;
+        Transform parent = collision.transform.parent;
+        if (parent == null) {
+            return;
+        }
+        GameObject obj = parent.gameObject;
         GetComponentInParent<GlowableObject>().StartGlow();
         //glowCompositeScript.StartGlow();
         string tag = obj.tag;
@@ -30,7 +33,11 @@ public class InteractionScript : MonoBehaviour {
     //}
 
     private void OnTriggerExit2D(Collider2D collision) {
-        GameObject obj = collision.transform.parent.gameObject;
+        Transform parent = collision.transform.parent;
+        if (parent == null) {
+            return;
+        }
+        GameObject obj = parent.gameObject;
         GetComponentInParent<GlowableObject>().EndGlow();
         //glowCompositeScript.EndGlow();
         string tag = obj.tag;

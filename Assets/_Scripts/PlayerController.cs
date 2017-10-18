@@ -231,6 +231,7 @@ public class PlayerController : Actor {
                     obj = GetComponentInChildren<BoxScript>();
                 } else {
                     float distance = GameManager.GetInstance().GetNearestBox(out box);
+                    Debug.Log("Distance: " + distance);
                     if (boxGrabRange > distance) {
                         obj = box;
                     }

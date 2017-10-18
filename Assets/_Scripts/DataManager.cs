@@ -17,8 +17,17 @@ public class DataManager : MonoBehaviour {
     private int levelIndex = 0;
     private bool gameJustStarted = true;
 
+    private Dictionary<TileName, Vector2[]> spriteUvs;
 
-    // Use this for initialization
+    public enum TileName {
+        floor,
+        wall,
+        engine_off_placeholder,
+        engine_on_placeholder,
+        buttonFloor_off_placeholder,
+        buttonFloor_on_placeholder
+    };
+
     void Start() {
         Debug.Log("DataManager Start()...");
         if (instance == null) {
@@ -32,6 +41,35 @@ public class DataManager : MonoBehaviour {
         audio.clip = song;
         audio.loop = true;
         TurnOnMusic(3.45f);
+        InitSpriteUVDictionary();
+    }
+
+    //Create material with texture atlas using this:
+    //Texture tex = SpriteUtility.GetSpriteTexture(sprite, true);
+    //GetComponent<Renderer>().material.mainTexture = tex;
+
+    private void InitSpriteUVDictionary() {
+        Debug.Log("Initing SpriteUV Dictionary...");
+        spriteUvs = new Dictionary<TileName, Vector2[]>();
+        string[] values = Enum.GetNames(typeof(TileName));
+        for (int i = 0; i < values.Length; i++) {
+
+            Sprite sprite = atlas.GetSprite(values[i]);
+            Rect spriteRect = sprite.textureRect;
+
+            float x = spriteRect.x / sprite.texture.width;
+            float y = spriteRect.y / sprite.texture.height;
+            float w = (spriteRect.x + spriteRect.width) / sprite.texture.width;
+            float h = (spriteRect.y + spriteRect.height) / sprite.texture.height;
+
+            Vector2[] newUvs = new Vector2[4];
+            newUvs[0].Set(x, y);
+            newUvs[1].Set(w, h);
+            newUvs[2].Set(w, y);
+            newUvs[3].Set(x, h);
+
+            spriteUvs.Add((TileName)Enum.Parse(typeof(TileName), values[i]), newUvs);
+        }
     }
 
     public void TurnOnMusic(float delay) {
@@ -68,7 +106,13 @@ public class DataManager : MonoBehaviour {
         gameJustStarted = value;
     }
 
-    public SpriteAtlas GetSpriteAtlas(string spriteAtlasName) {
+    public SpriteAtlas GetSpriteAtlas() {
         return atlas;
+    }
+
+    public Vector2[] GetSpriteUV(TileName sprite) {
+        Vector2[] array;
+        spriteUvs.TryGetValue(sprite, out array);
+        return array;
     }
 }

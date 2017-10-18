@@ -23,7 +23,9 @@ public class BoxScript : TogglableObject {
                 currentActor = actor;
                 currentActor.SetDragging(true);
                 //offset = transform.position - currentActor.transform.position;
+
                 Destroy(rb);
+
                 this.transform.SetParent(actor.transform);
                 actor.speed = 3f;
                 currentActor.UpdateDraggingState(true, this);
@@ -33,7 +35,9 @@ public class BoxScript : TogglableObject {
             grabbed = false;
             currentActor.SetDragging(false);
             currentActor.UpdateDraggingState(false, null);
+
             CreateRigidbody();
+
             this.transform.SetParent(actor.GetCurrentRoom().GetObjects());
             actor.speed = 4f;
             currentActor = null;
