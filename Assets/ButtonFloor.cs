@@ -20,7 +20,6 @@ public class ButtonFloor : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision) {
         entitiesCounter++;
-        Debug.Log(collision.transform.gameObject);
         occupied = true;
         active = true;
         offSprite.gameObject.SetActive(false);

@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviour {
     public Transform canvasTransform;
     public GameObject gameOverBanner;
     public TextMeshProUGUI restartMessage;
-    public TextMeshProUGUI keycardText;
+    public Transform keycardUI;
+    public Transform energyUI;
 
     private bool displayRestartMessage;
     private bool displayGameOverBanner;
@@ -24,6 +25,9 @@ public class GameManager : MonoBehaviour {
     private static GameManager instance;
     private Vector2 startPos;
 
+    private TextMeshProUGUI energyText;
+    private int levelEnergy = 0;
+
     void Start() {
         if (instance == null) {
             instance = this;
@@ -31,6 +35,7 @@ public class GameManager : MonoBehaviour {
             Destroy(this.gameObject);
             return;
         }
+        energyText = energyUI.GetComponentInChildren<TextMeshProUGUI>();
         InitCurrentLevel();
     }
 
@@ -50,7 +55,6 @@ public class GameManager : MonoBehaviour {
         boxes = new List<BoxScript>();
         foreach (Transform room in currentLevelTransform.GetComponent<LevelScript>().roomsTransform) {
             foreach (Transform obj in room.Find("OBJECTS")) {
-                Debug.Log(obj + ", " + obj.position);
                 BoxScript box = obj.GetComponent<BoxScript>();
                 if (box != null) {
                     boxes.Add(box);
@@ -63,8 +67,6 @@ public class GameManager : MonoBehaviour {
         nearestBox = null;
         float minDistance = 100;
         foreach (BoxScript box in boxes) {
-            Debug.Log("player pos: " + player.transform.position);
-            Debug.Log("box pos: " + box.transform.position);
             Vector3 delta = player.transform.position - box.transform.position;
             float distance = Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y);
             if (distance <= minDistance) {
@@ -103,7 +105,8 @@ public class GameManager : MonoBehaviour {
         player.transform.SetParent(null);
         player.DisableBars();
         gameOverBanner.SetActive(true);
-        keycardText.gameObject.SetActive(false);
+        keycardUI.gameObject.SetActive(false);
+        energyUI.gameObject.SetActive(false);
         currentLevelTransform.gameObject.SetActive(false);
 
         //canvasTransform.DetachChildren();
@@ -128,7 +131,14 @@ public class GameManager : MonoBehaviour {
         return instance;
     }
 
-    //public List<TerminalScript> GetTerminals() {
-    //    return terminals;
-    //}
+    public void IncreaseLevelEnergy(int value) {
+        levelEnergy += value;
+        energyText.text = ": " + levelEnergy;
+    }
+
+    public void DecreaseLevelEnergy(int value) {
+        levelEnergy -= value;
+        energyText.text = ": " + levelEnergy;
+    }
+
 }

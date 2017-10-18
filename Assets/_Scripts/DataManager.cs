@@ -49,7 +49,7 @@ public class DataManager : MonoBehaviour {
     //GetComponent<Renderer>().material.mainTexture = tex;
 
     private void InitSpriteUVDictionary() {
-        Debug.Log("Initing SpriteUV Dictionary...");
+        //Debug.Log("Initing SpriteUV Dictionary...");
         spriteUvs = new Dictionary<TileName, Vector2[]>();
         string[] values = Enum.GetNames(typeof(TileName));
         for (int i = 0; i < values.Length; i++) {
