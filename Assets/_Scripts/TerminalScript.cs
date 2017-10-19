@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TerminalScript : TogglableObject {
+public class TerminalScript : TogglableObject, EnergyObject {
 
     public List<TogglableObject> affectedObjects;
     public List<LightningParticleScript> particleScriptList;
@@ -13,6 +13,8 @@ public class TerminalScript : TogglableObject {
 
     private bool startTimer;
     private float elapsed;
+
+    private int requiredEnergy = 1;
 
     private void Awake() {
         particleScriptList = new List<LightningParticleScript>();
@@ -45,14 +47,19 @@ public class TerminalScript : TogglableObject {
 
     public override void Toggle(Actor actor) {
         if (!activated) {
-            activated = true;
-            startTimer = true;
-            elapsed = 0;
-            ToggleAffectedObjects(actor);
-            foreach (LightningParticleScript script in particleScriptList) {
-                script.gameObject.SetActive(true);
+            if (GameManager.GetInstance().HasEnoughEnergy(requiredEnergy)) {
+                activated = true;
+                startTimer = true;
+                elapsed = 0;
+                ToggleAffectedObjects(actor);
+                foreach (LightningParticleScript script in particleScriptList) {
+                    script.gameObject.SetActive(true);
+                }
+            } else {
+                //warning animation
             }
         } else {
+            GameManager.GetInstance().IncreaseLevelEnergy(requiredEnergy);
             activated = false;
             startTimer = false;
             ToggleAffectedObjects(actor);
@@ -68,5 +75,9 @@ public class TerminalScript : TogglableObject {
 
     public override Component GetParticleColliderTransform() {
         throw new NotImplementedException();
+    }
+
+    public int GetRequiredEnergy() {
+        return requiredEnergy;
     }
 }

@@ -51,6 +51,14 @@ public class GameManager : MonoBehaviour {
         GetBoxes();
     }
 
+    public bool HasEnoughEnergy(int requiredEnergy) {
+        if (levelEnergy - requiredEnergy >= 0) {
+            DecreaseLevelEnergy(requiredEnergy);
+            return true;
+        }
+        return false;
+    }
+
     private void GetBoxes() {
         boxes = new List<BoxScript>();
         foreach (Transform room in currentLevelTransform.GetComponent<LevelScript>().roomsTransform) {
@@ -138,7 +146,20 @@ public class GameManager : MonoBehaviour {
 
     public void DecreaseLevelEnergy(int value) {
         levelEnergy -= value;
+        DeactivateEnergyObjects();
         energyText.text = ": " + levelEnergy;
+    }
+
+    private void DeactivateEnergyObjects() {
+        while (levelEnergy < 0) {
+            DeactivateLastInteractedObject();
+        }
+    }
+
+    private void DeactivateLastInteractedObject() {
+        EnergyObject energyObj = player.GetInteractedEnergyObjects().Pop();
+        TogglableObject obj = energyObj as TogglableObject;
+        obj.Toggle(null);
     }
 
 }

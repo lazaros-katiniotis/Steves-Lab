@@ -36,8 +36,6 @@ public class PlayerController : Actor {
     public HealthBarScript healthBar;
     public HealthBarScript oxygenBar;
 
-    //private PlayerInteractionScript interactionScript;
-
     private GameObject lastInteractedObject;
 
     private float animationWaitTimer;
@@ -47,8 +45,11 @@ public class PlayerController : Actor {
     private bool dead = false;
     private bool hurt;
     private bool dazed;
+    private Vector2 knockbackForce;
+    private Vector2 currentKnockbackForce;
     private TogglableObject objectDragged;
 
+    private Stack<EnergyObject> interactedEnergyObjects;
 
     public enum AnimationState {
         RUN_UP, RUN_DOWN, RUN_LEFT, RUN_RIGHT, IDLE_UP, IDLE_DOWN, IDLE_LEFT, IDLE_RIGHT, DEATH, START, CONTINUE
@@ -67,6 +68,7 @@ public class PlayerController : Actor {
         inventoryManager = inventory.GetComponent<InventoryManager>();
         animator = GetComponentInChildren<Animator>();
         material = GetComponentInChildren<Renderer>().material;
+        interactedEnergyObjects = new Stack<EnergyObject>();
         bool value = DataManager.GetInstance().HasGameJustStarted();
         value = false;
         if (value) {
@@ -136,9 +138,6 @@ public class PlayerController : Actor {
         }
         yield return null;
     }
-
-    private Vector2 knockbackForce;
-    private Vector2 currentKnockbackForce;
 
     public void Knockback(Vector2 force) {
         knockbackForce = force;
@@ -242,6 +241,7 @@ public class PlayerController : Actor {
             if (obj == null) {
                 return;
             }
+            AddToInteractedObjectsStack(obj);
             obj.Toggle(this);
         }
 
@@ -416,5 +416,19 @@ public class PlayerController : Actor {
     public override void UpdateDraggingState(bool isDragging, TogglableObject obj) {
         dragging = isDragging;
         objectDragged = obj;
+    }
+
+    public void AddToInteractedObjectsStack(TogglableObject obj) {
+        if (obj.GetType().Equals(typeof(BoxScript))) {
+            return;
+        }
+        EnergyObject energyObj = obj as EnergyObject;
+        if (!interactedEnergyObjects.Contains(energyObj)) {
+            interactedEnergyObjects.Push(energyObj);
+        }
+    }
+
+    public Stack<EnergyObject> GetInteractedEnergyObjects() {
+        return interactedEnergyObjects;
     }
 }
