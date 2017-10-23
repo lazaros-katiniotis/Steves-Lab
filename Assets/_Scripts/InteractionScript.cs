@@ -38,6 +38,10 @@ public class InteractionScript : MonoBehaviour {
             return;
         }
         GameObject obj = parent.gameObject;
+        if (GetComponentInParent<GlowableObject>() == null) {
+            Debug.Log(obj);
+            Debug.Log("NULL!");
+        }
         GetComponentInParent<GlowableObject>().EndGlow();
         //glowCompositeScript.EndGlow();
         string tag = obj.tag;

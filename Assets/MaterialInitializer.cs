@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Sprites;
 using UnityEngine;
 using UnityEngine.U2D;
 

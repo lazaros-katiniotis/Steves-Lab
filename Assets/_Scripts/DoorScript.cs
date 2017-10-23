@@ -21,13 +21,21 @@ public abstract class DoorScript : TogglableObject {
     public abstract void Close();
 
     public void OpenIndicator() {
-        closedIndicatorTransform.gameObject.SetActive(false);
-        openIndicatorTransform.gameObject.SetActive(true);
+        if (closedIndicatorTransform != null) {
+            closedIndicatorTransform.gameObject.SetActive(false);
+        }
+        if (openIndicatorTransform != null) {
+            openIndicatorTransform.gameObject.SetActive(true);
+        }
     }
 
     public void CloseIndicator() {
-        closedIndicatorTransform.gameObject.SetActive(true);
-        openIndicatorTransform.gameObject.SetActive(false);
+        if (closedIndicatorTransform != null) {
+            closedIndicatorTransform.gameObject.SetActive(true);
+        }
+        if (openIndicatorTransform != null) {
+            openIndicatorTransform.gameObject.SetActive(false);
+        }
     }
 
     public RoomScript GetNextRoom() {

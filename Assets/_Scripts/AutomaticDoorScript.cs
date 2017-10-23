@@ -11,7 +11,11 @@ public class AutomaticDoorScript : DoorScript {
     }
 
     void Start() {
-
+        if (activeOnStart) {
+            activated = true;
+            OpenIndicator();
+            //Open();
+        }
     }
 
     void Update() {

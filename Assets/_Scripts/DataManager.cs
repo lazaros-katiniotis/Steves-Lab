@@ -25,7 +25,9 @@ public class DataManager : MonoBehaviour {
         engine_off_placeholder,
         engine_on_placeholder,
         buttonFloor_off_placeholder,
-        buttonFloor_on_placeholder
+        buttonFloor_on_placeholder,
+        wallBottom,
+        wallTop,
     };
 
     void Start() {

@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour {
 
     public PlayerController player;
     public Transform currentLevelTransform;
+    public Transform objectTransform;
     public Transform canvasTransform;
     public GameObject gameOverBanner;
     public TextMeshProUGUI restartMessage;
@@ -49,6 +50,7 @@ public class GameManager : MonoBehaviour {
         displayRestartMessage = false;
         displayGameOverBanner = false;
         GetBoxes();
+        //IncreaseLevelEnergy(3);
     }
 
     public bool HasEnoughEnergy(int requiredEnergy) {
@@ -61,12 +63,10 @@ public class GameManager : MonoBehaviour {
 
     private void GetBoxes() {
         boxes = new List<BoxScript>();
-        foreach (Transform room in currentLevelTransform.GetComponent<LevelScript>().roomsTransform) {
-            foreach (Transform obj in room.Find("OBJECTS")) {
-                BoxScript box = obj.GetComponent<BoxScript>();
-                if (box != null) {
-                    boxes.Add(box);
-                }
+        foreach (Transform obj in objectTransform) {
+            BoxScript box = obj.GetComponent<BoxScript>();
+            if (box != null) {
+                boxes.Add(box);
             }
         }
     }
