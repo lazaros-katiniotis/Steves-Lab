@@ -50,7 +50,8 @@ public class GameManager : MonoBehaviour {
         displayRestartMessage = false;
         displayGameOverBanner = false;
         GetBoxes();
-        //IncreaseLevelEnergy(3);
+        int startingEnergy = currentLevelTransform.GetComponent<LevelScript>().levelEnergy;
+        IncreaseLevelEnergy(startingEnergy);
     }
 
     public bool HasEnoughEnergy(int requiredEnergy) {

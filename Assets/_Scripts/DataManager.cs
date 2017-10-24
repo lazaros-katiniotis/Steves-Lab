@@ -6,19 +6,6 @@ using UnityEngine.U2D;
 
 public class DataManager : MonoBehaviour {
 
-    public List<string> scenes;
-    public static DataManager instance;
-    public SpriteAtlas atlas;
-
-    public AudioClip song;
-    private AudioSource audio;
-    private float songDelay;
-
-    private int levelIndex = 0;
-    private bool gameJustStarted = true;
-
-    private Dictionary<TileName, Vector2[]> spriteUvs;
-
     public enum TileName {
         floor,
         wall,
@@ -28,7 +15,67 @@ public class DataManager : MonoBehaviour {
         buttonFloor_on_placeholder,
         wallBottom,
         wallTop,
+        flames_0,
+        flames_1,
+        flames_2,
+        box,
+        boxCopy,
+        doorFrontClosed,
+        doorFrontOpen,
+        doorIndicator,
+        doorIndicatorGreen,
+        doorIndicatorRed,
+        doorIndicatorYellow,
+        doorSideClosed,
+        doorSideOpen,
+        fence,
+        fenceLeft,
+        fenceRight,
+        healthPack,
+        keycard,
+        oxygenPack,
+        stairsDown,
+        stairsLeft,
+        stairsRight,
+        stairsUp,
+        terminal,
+        wallAirVent,
+        wallLamp,
+        wallLamp2
     };
+
+    public class SpriteData {
+        private Vector2[] uv;
+        private Vector2 spriteScale;
+
+        public SpriteData(Vector2[] uv, Vector2 spriteScale) {
+            this.uv = uv;
+            this.spriteScale = spriteScale;
+        }
+
+        public Vector2[] GetUV() {
+            return uv;
+        }
+
+        public Vector2 GetSpriteSize() {
+            return spriteScale;
+        }
+
+    };
+
+    public List<string> scenes;
+    public static DataManager instance;
+    public SpriteAtlas atlas;
+    //private Vector2 atlasSize;
+
+    public AudioClip song;
+    private AudioSource audio;
+    private float songDelay;
+
+    private int levelIndex = 0;
+    private bool gameJustStarted = true;
+
+    private Dictionary<TileName, SpriteData> spriteData;
 
     void Start() {
         Debug.Log("DataManager Start()...");
@@ -46,13 +93,11 @@ public class DataManager : MonoBehaviour {
         InitSpriteUVDictionary();
     }
 
-    //Create material with texture atlas using this:
-    //Texture tex = SpriteUtility.GetSpriteTexture(sprite, true);
-    //GetComponent<Renderer>().material.mainTexture = tex;
-
     private void InitSpriteUVDictionary() {
         //Debug.Log("Initing SpriteUV Dictionary...");
-        spriteUvs = new Dictionary<TileName, Vector2[]>();
+        //Texture atlasTexture = atlas.GetSprite("floor").texture;
+        //atlasSize = new Vector2(atlasTexture.width, atlasTexture.height);
+        spriteData = new Dictionary<TileName, SpriteData>();
         string[] values = Enum.GetNames(typeof(TileName));
         for (int i = 0; i < values.Length; i++) {
 
@@ -63,14 +108,14 @@ public class DataManager : MonoBehaviour {
             float y = spriteRect.y / sprite.texture.height;
             float w = (spriteRect.x + spriteRect.width) / sprite.texture.width;
             float h = (spriteRect.y + spriteRect.height) / sprite.texture.height;
-
-            Vector2[] newUvs = new Vector2[4];
-            newUvs[0].Set(x, y);
-            newUvs[1].Set(w, h);
-            newUvs[2].Set(w, y);
-            newUvs[3].Set(x, h);
-
-            spriteUvs.Add((TileName)Enum.Parse(typeof(TileName), values[i]), newUvs);
+            Vector2[] uvs = new Vector2[4];
+            uvs[0].Set(x, y);
+            uvs[1].Set(w, h);
+            uvs[2].Set(w, y);
+            uvs[3].Set(x, h);
+            Vector2 spriteSize = new Vector2((w - x) * sprite.texture.width / 32, (h - y) * sprite.texture.height / 32);
+            SpriteData data = new SpriteData(uvs, spriteSize);
+            spriteData.Add((TileName)Enum.Parse(typeof(TileName), values[i]), data);
         }
     }
 
@@ -112,9 +157,9 @@ public class DataManager : MonoBehaviour {
         return atlas;
     }
 
-    public Vector2[] GetSpriteUV(TileName sprite) {
-        Vector2[] array;
-        spriteUvs.TryGetValue(sprite, out array);
-        return array;
+    public SpriteData GetSpriteData(TileName sprite) {
+        SpriteData data;
+        spriteData.TryGetValue(sprite, out data);
+        return data;
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class LevelScript : MonoBehaviour {
 
     public Transform roomsTransform;
+    public int levelEnergy;
 
     void Start() {
         //for (int i = 0; i < roomsTransform.childCount; i++) {
