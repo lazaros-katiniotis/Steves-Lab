@@ -42,7 +42,7 @@ public class LightningParticleScript : MonoBehaviour {
         particleVelocity.y = direction.y * speed / distance;
         particleVelocity.z = 0;
         float velocity = Mathf.Sqrt(particleVelocity.x * particleVelocity.x + particleVelocity.y * particleVelocity.y);
-        main.startLifetime = (distance / velocity) + 1;
+        main.startLifetime = (0.5f*distance / velocity) + 1;
 
         ParticleSystem.Burst[] bursts = new ParticleSystem.Burst[1];
         bursts[0] = new ParticleSystem.Burst(0.0f, 1, 1, 0, Random.Range(3.25f, 3.75f));

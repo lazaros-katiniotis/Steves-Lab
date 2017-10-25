@@ -26,7 +26,8 @@ public class BlinkingLightScript : MonoBehaviour {
         light = GetComponent<Light>();
         baseRange = light.range;
         offset = UnityEngine.Random.Range(baseRangeOffset.x, baseRangeOffset.y);
-
+        elapsed = UnityEngine.Random.Range(0.0f, 1.0f);
+        phaseOffset = UnityEngine.Random.Range(0.9f, 1.1f);
         //baseRangeOffset = -1.0f;
         //rangeScaleOffset = Random.Range(0.4f, 0.6f);
         //phaseOffset = Random.Range(0.25f, 0.5f);
