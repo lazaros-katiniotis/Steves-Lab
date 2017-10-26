@@ -169,7 +169,6 @@ public class PlayerController : Actor {
         rb.velocity = Vector2.zero;
         animator.Play("PlayerDeath");
         UpdateMaterialNormal(8);
-
     }
 
     // Update is called once per frame

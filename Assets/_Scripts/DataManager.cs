@@ -72,7 +72,8 @@ public class DataManager : MonoBehaviour {
     private AudioSource audio;
     private float songDelay;
 
-    private int levelIndex = 0;
+    public int currentLevelIndex;
+    private int levelIndex;
     private bool gameJustStarted = true;
 
     private Dictionary<TileName, SpriteData> spriteData;
@@ -85,7 +86,7 @@ public class DataManager : MonoBehaviour {
             Destroy(this.gameObject);
             return;
         }
-
+        levelIndex = currentLevelIndex - 1;
         audio = GetComponent<AudioSource>();
         audio.clip = song;
         audio.loop = true;
@@ -141,6 +142,7 @@ public class DataManager : MonoBehaviour {
     }
 
     public void NextLevel() {
+        Debug.Log("Getting next level...");
         levelIndex++;
         UnityEngine.SceneManagement.SceneManager.LoadScene(GetCurrentScene());
     }

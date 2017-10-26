@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class WallLampScript : TogglableObject {
 
+    public Transform particleColliderTransform;
     private BlinkingLightScript light;
 
     void Start() {
@@ -35,6 +36,6 @@ public class WallLampScript : TogglableObject {
     }
 
     public override Component GetParticleColliderTransform() {
-        throw new NotImplementedException();
+        return particleColliderTransform;
     }
 }
