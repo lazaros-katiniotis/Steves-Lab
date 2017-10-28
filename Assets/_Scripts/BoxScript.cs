@@ -10,6 +10,8 @@ public class BoxScript : TogglableObject {
     private Actor currentActor;
     //private Vector2 offset;
 
+    public InteractionScript interactionScript;
+
     private void Awake() {
         rb = GetComponentInChildren<Rigidbody2D>();
     }
@@ -18,23 +20,56 @@ public class BoxScript : TogglableObject {
     public override void Toggle(Actor actor) {
         if (!grabbed) {
             if (!actor.IsDragging()) {
-                //Debug.Log("Object grabbed!");
                 grabbed = true;
                 currentActor = actor;
                 currentActor.SetDragging(true);
-                //offset = transform.position - currentActor.transform.position;
+
+                Vector2 size;
+                Vector2 offset;
+                Vector3 delta = this.transform.position - currentActor.transform.position;
+                if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y)) {
+                    if (Mathf.Sign(delta.x) < 0) {
+                        Debug.Log("RIGHT");
+                        offset.x = 1.0f;
+                        offset.y = 0.0f;
+                        size.x = 0.8f;
+                        size.y = 0.8f;
+                    } else {
+                        Debug.Log("LEFT");
+                        offset.x = -1.0f;
+                        offset.y = 0;
+                        size.x = 0.8f;
+                        size.y = 0.8f;
+                    }
+                } else {
+                    if (Mathf.Sign(delta.y) < 0) {
+                        Debug.Log("TOP");
+                        offset.x = 0.0f;
+                        offset.y = 1.0f;
+                        size.x = 0.8f;
+                        size.y = 0.8f;
+                    } else {
+                        Debug.Log("DOWN");
+                        offset.x = 0.0f;
+                        offset.y = -1.0f;
+                        size.x = 0.8f;
+                        size.y = 0.8f;
+                    }
+                }
 
                 Destroy(rb);
 
                 this.transform.SetParent(actor.transform);
                 actor.speed = 3f;
-                currentActor.UpdateDraggingState(true, this);
+                delta.x += offset.x;
+                delta.y += offset.y;
+                currentActor.UpdateDraggingState(true, delta, size, this);
             }
         } else {
             //Debug.Log("Object released.");
             grabbed = false;
             currentActor.SetDragging(false);
-            currentActor.UpdateDraggingState(false, null);
+            currentActor.UpdateDraggingState(false, Vector2.zero, Vector2.zero, null);
 
             CreateRigidbody();
 

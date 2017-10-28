@@ -10,7 +10,7 @@ public abstract class Actor : MonoBehaviour {
 
     public abstract InventoryManager GetInventory();
 
-    public abstract void UpdateDraggingState(bool isDragging, TogglableObject obj);
+    public abstract void UpdateDraggingState(bool isDragging, Vector2 offset, Vector2 size, TogglableObject obj);
 
     public void SetCurrentRoom(RoomScript room) {
         currentRoom = room;
@@ -27,5 +27,5 @@ public abstract class Actor : MonoBehaviour {
     public void SetDragging(bool value) {
         this.dragging = value;
     }
-
+    
 }

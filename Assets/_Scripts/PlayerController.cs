@@ -19,6 +19,8 @@ public class PlayerController : Actor {
     private bool oxygenDepleting;
 
     public Transform pickupTransform;
+    private CircleCollider2D circleCollider;
+    private BoxCollider2D boxCollider;
     private BoxCollider2D pickupCollider;
 
     //public TextMeshProUGUI roomOxygenText;
@@ -61,6 +63,8 @@ public class PlayerController : Actor {
     private void Awake() {
         //interactionScript = GetComponentInChildren<PlayerInteractionScript>();
         pickupCollider = pickupTransform.GetComponent<BoxCollider2D>();
+        circleCollider = GetComponent<CircleCollider2D>();
+        boxCollider = GetComponent<BoxCollider2D>();
     }
 
     void Start() {
@@ -223,19 +227,12 @@ public class PlayerController : Actor {
         }
         if (Input.GetButtonDown("Use")) {
             TogglableObject obj = null;
-            if (lastInteractedObject == null) {
-                BoxScript box;
-                if (dragging) {
-                    obj = GetComponentInChildren<BoxScript>();
-                } else {
-                    float distance = GameManager.GetInstance().GetNearestBox(out box);
-                    Debug.Log("Distance: " + distance);
-                    if (boxGrabRange > distance) {
-                        obj = box;
-                    }
-                }
-            } else {
+            if (lastInteractedObject != null) {
                 obj = lastInteractedObject.GetComponentInParent<TogglableObject>();
+
+            }
+            if (dragging) {
+                GetComponentInChildren<BoxScript>().Toggle(this);
             }
             if (obj == null) {
                 return;
@@ -412,8 +409,18 @@ public class PlayerController : Actor {
         return pickupCollider;
     }
 
-    public override void UpdateDraggingState(bool isDragging, TogglableObject obj) {
+    //hardcoded
+    public override void UpdateDraggingState(bool isDragging, Vector2 offset, Vector2 size, TogglableObject obj) {
         dragging = isDragging;
+        if (dragging == true) {
+            this.circleCollider.enabled = false;
+            this.boxCollider.enabled = true;
+            this.boxCollider.offset = offset;
+            this.boxCollider.size = size;
+        } else {
+            this.boxCollider.enabled = false;
+            this.circleCollider.enabled = true;
+        }
         objectDragged = obj;
     }
 

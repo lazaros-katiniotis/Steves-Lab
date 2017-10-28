@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class InteractionScript : MonoBehaviour {
 
+    private enum BoxColliderId : int {
+        UP, LEFT, DOWN, RIGHT
+    }
+
     private GlowComposite glowCompositeScript;
 
     private void Awake() {
@@ -15,6 +19,7 @@ public class InteractionScript : MonoBehaviour {
         if (parent == null) {
             return;
         }
+        
         GameObject obj = parent.gameObject;
         GetComponentInParent<GlowableObject>().StartGlow();
         //glowCompositeScript.StartGlow();
