@@ -6,6 +6,7 @@ using UnityEngine;
 public class LaserEmitterScript : TogglableObject {
 
     public bool rotate;
+    public float startingAngle;
     public float rotationSpeedMultiplier;
 
     private LaserScript laserBeam;
@@ -20,6 +21,7 @@ public class LaserEmitterScript : TogglableObject {
 
     private void Awake() {
         laserBeam = GetComponentInChildren<LaserScript>();
+        laserBeam.SetRotation(startingAngle);
     }
     // Use this for initialization
     void Start() {

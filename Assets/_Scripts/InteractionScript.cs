@@ -19,23 +19,21 @@ public class InteractionScript : MonoBehaviour {
         if (parent == null) {
             return;
         }
-        
+
         GameObject obj = parent.gameObject;
-        GetComponentInParent<GlowableObject>().StartGlow();
-        //glowCompositeScript.StartGlow();
+        GlowableObject glowableObj = GetComponentInParent<GlowableObject>();
+        if (glowableObj != null) {
+            GetComponentInParent<GlowableObject>().StartGlow();
+        }
         string tag = obj.tag;
         switch (tag) {
             case "Player":
             Debug.Log("Player entered " + this.transform.parent.gameObject + "'s AoI!");
             PlayerController player = obj.GetComponent<PlayerController>();
-            player.SetLastInteractedObject(this.transform.parent.gameObject);
+            player.SetLastInteractableObjectInRange(this.transform.parent.gameObject);
             break;
         }
     }
-
-    //private void OnTriggerStay2D(Collider2D collision) {
-    //    GetComponentInParent<GlowableObject>().StartGlow();
-    //}
 
     private void OnTriggerExit2D(Collider2D collision) {
         Transform parent = collision.transform.parent;
@@ -43,18 +41,16 @@ public class InteractionScript : MonoBehaviour {
             return;
         }
         GameObject obj = parent.gameObject;
-        if (GetComponentInParent<GlowableObject>() == null) {
-            Debug.Log(obj);
-            Debug.Log("NULL!");
+        GlowableObject glowableObj = GetComponentInParent<GlowableObject>();
+        if (glowableObj != null) {
+            GetComponentInParent<GlowableObject>().EndGlow();
         }
-        GetComponentInParent<GlowableObject>().EndGlow();
-        //glowCompositeScript.EndGlow();
         string tag = obj.tag;
         switch (tag) {
             case "Player":
             Debug.Log("Player exited " + this.transform.parent.gameObject + "'s AoI!");
             PlayerController player = obj.GetComponent<PlayerController>();
-            player.SetLastInteractedObject(null);
+            player.SetLastInteractableObjectInRange(null);
             break;
         }
         obj = null;

@@ -51,6 +51,10 @@ public class LaserScript : MonoBehaviour {
         laserLight.intensity = AppHelper.PingPong(1, 4, intensityElapsed);
     }
 
+    public void SetRotation(float angle) {
+        transform.Rotate(0, 0, angle);
+    }
+
     public void LaserRotation(float rotationSpeedMultiplier) {
         float angle = Time.deltaTime * rotationSpeedMultiplier;
         transform.Rotate(0, 0, angle);
@@ -61,17 +65,16 @@ public class LaserScript : MonoBehaviour {
         //Vector3 direction = target.transform.position - transform.position;
         //RaycastHit2D[] results;
         Vector3 direction = transform.TransformDirection(transform.right);
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.TransformDirection(transform.right), Mathf.Infinity, layerMask);
-        if (hit) {
-            lineRenderer.SetPosition(1, transform.InverseTransformPoint(hit.point));
-            laserPointPosition.x = hit.point.x;
-            laserPointPosition.y = hit.point.y;
+        RaycastHit2D[] hit = Physics2D.RaycastAll(transform.position, transform.TransformDirection(transform.right), Mathf.Infinity, layerMask);
+        if (hit.Length > 1) {
+            lineRenderer.SetPosition(1, transform.InverseTransformPoint(hit[1].point));
+            laserPointPosition.x = hit[1].point.x;
+            laserPointPosition.y = hit[1].point.y;
             laserLight.transform.position = laserPointPosition;
-            sparkPosition.x = hit.point.x;
-            sparkPosition.y = hit.point.y;
+            sparkPosition.x = hit[1].point.x;
+            sparkPosition.y = hit[1].point.y;
             sparkParticleSystem.transform.position = sparkPosition;
-            CheckIfPlayerWasHit(hit);
-
+            CheckIfPlayerWasHit(hit[1]);
         } else {
             lineRenderer.SetPosition(1, transform.right * 100f);
             laserPointPosition.x = transform.right.x * 100f;
@@ -81,6 +84,28 @@ public class LaserScript : MonoBehaviour {
             sparkPosition.y = transform.right.y * 100f;
             sparkParticleSystem.transform.position = sparkPosition;
         }
+        /*
+        if (hit) {
+            if (hit.collider.gameObject != this) {
+                lineRenderer.SetPosition(1, transform.InverseTransformPoint(hit.point));
+                laserPointPosition.x = hit.point.x;
+                laserPointPosition.y = hit.point.y;
+                laserLight.transform.position = laserPointPosition;
+                sparkPosition.x = hit.point.x;
+                sparkPosition.y = hit.point.y;
+                sparkParticleSystem.transform.position = sparkPosition;
+                CheckIfPlayerWasHit(hit);
+            }
+        } else {
+            lineRenderer.SetPosition(1, transform.right * 100f);
+            laserPointPosition.x = transform.right.x * 100f;
+            laserPointPosition.y = transform.right.y * 100f;
+            laserLight.transform.position = laserPointPosition;
+            sparkPosition.x = transform.right.x * 100f;
+            sparkPosition.y = transform.right.y * 100f;
+            sparkParticleSystem.transform.position = sparkPosition;
+        }
+        */
     }
 
     private Vector2 force = new Vector2(0, -15000);

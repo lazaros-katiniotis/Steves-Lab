@@ -31,7 +31,7 @@ public class PixelPerfectScript : MonoBehaviour {
         foreach (Camera camera in cameras) {
             camera.orthographicSize = orthographicSize;
         }
-        Debug.Log("Screen: (" + Screen.width + ", " + Screen.height + ")");
-        Debug.Log("Orthographic size: " + orthographicSize);
+        //Debug.Log("Screen: (" + Screen.width + ", " + Screen.height + ")");
+        //Debug.Log("Orthographic size: " + orthographicSize);
     }
 }
