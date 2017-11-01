@@ -228,7 +228,6 @@ public class PlayerController : Actor {
 
     private void UpdateDraggedObject() {
         if (objectDragged) {
-            //StartCoroutine(LerpToDraggedObject());
             if (keepUpdating) {
                 float deltaAngle = angularSpeed * Time.deltaTime * 5.0f;
                 if (rotationDirection == -1) {
@@ -260,14 +259,14 @@ public class PlayerController : Actor {
 
     private IEnumerator LerpToDraggedObject() {
         float elapsed = 0.0f;
-        Collider[] colliders = objectDragged.GetInteractionScript().GetComponents<Collider>();
-        foreach (Collider col in colliders) {
-            //Vector3 minPoint = col.bounds.
-        }
-        while (elapsed < 1.0f) {
-            elapsed += Time.deltaTime;
-            //this.transform.position = Vector3.Lerp(this.transform.position, elapsed);
-            yield return null;
+        if (objectDragged) {
+            Vector3 boxPos = objectDragged.transform.position;
+            while (elapsed < 1.0f) {
+                elapsed += Time.deltaTime * 10.0f;
+                this.transform.position = Vector3.Lerp(this.transform.position, boxPos + objectDragged.bottom, elapsed);
+                yield return null;
+            }
+            objectDragged.transform.SetParent(this.transform);
         }
         yield return null;
     }
@@ -512,6 +511,7 @@ public class PlayerController : Actor {
         //}
         this.relativePosition = relativePosition;
         objectDragged = obj;
+        StartCoroutine(LerpToDraggedObject());
     }
 
     public void AddToInteractedObjectsStack(TogglableObject obj) {

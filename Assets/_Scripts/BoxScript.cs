@@ -10,6 +10,11 @@ public class BoxScript : TogglableObject {
     private Actor currentActor;
     //private Vector2 offset;
 
+    public Vector3 top;
+    public Vector3 bottom;
+    public Vector3 left;
+    public Vector3 right;
+
     public InteractionScript interactionScript;
 
     private void Awake() {
@@ -112,8 +117,6 @@ public class BoxScript : TogglableObject {
                 }
 
                 Destroy(rb);
-
-                this.transform.SetParent(actor.transform);
                 actor.speed = 3f;
                 //delta.x += offset.x;
                 //delta.y += offset.y;
