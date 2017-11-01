@@ -22,6 +22,12 @@ public class LaserEmitterScript : TogglableObject {
     private void Awake() {
         laserBeam = GetComponentInChildren<LaserScript>();
         laserBeam.SetRotation(startingAngle);
+
+        if (activeOnStart) {
+            laserBeam.Activate();
+        } else {
+            laserBeam.Deactivate();
+        }
     }
     // Use this for initialization
     void Start() {

@@ -24,6 +24,10 @@ public class LaserScript : MonoBehaviour {
     private float widthElapsed = 0;
 
     private PlayerController player;
+    private Vector3 perpendicular;
+
+    public bool turnedOff;
+    private bool wasTurnedOff;
 
     private void Awake() {
         lineRenderer = GetComponent<LineRenderer>();
@@ -32,12 +36,64 @@ public class LaserScript : MonoBehaviour {
         sparkPosition = new Vector3(0, 0, -0.15f);
     }
 
-    private Vector3 perpendicular;
+    public void Activate() {
+        flicker = true;
+        turnedOff = false;
+        wasTurnedOff = false;
+    }
+
+    public void Deactivate() {
+        CastLaser();
+        lineRenderer.widthMultiplier = 0.0f;
+        SetParticleEmission(false);
+        laserLight.enabled = false;
+        turnedOff = true;
+        wasTurnedOff = true;
+        currentWidth = 0.0f;
+    }
+
+    private bool flicker;
 
     void Update() {
-        CastLaser();
-        LaserWidthAnimation();
-        LaserLightAnimation();
+        if (turnedOff == true && turnedOff != wasTurnedOff) {
+            StartCoroutine(ToggleLaserBeam(0.0f, false));
+        } else if (turnedOff == false && turnedOff != wasTurnedOff) {
+            StartCoroutine(ToggleLaserBeam(defaultWidth, true));
+        }
+
+        if (flicker) {
+            CastLaser();
+            LaserWidthAnimation();
+            LaserLightAnimation();
+        }
+
+        wasTurnedOff = turnedOff;
+    }
+
+    private IEnumerator ToggleLaserBeam(float nextWidth, bool shouldEmit) {
+        float elapsed = 0.0f;
+        flicker = false;
+        bool entered = false;
+        while (elapsed <= 1.0f) {
+            elapsed += Time.deltaTime;
+            currentWidth = Mathf.Lerp(currentWidth, nextWidth, elapsed);
+            if (elapsed > 0.15f) {
+                if (!entered) {
+                    entered = true;
+                    SetParticleEmission(shouldEmit);
+                    laserLight.enabled = shouldEmit;
+                }
+                if (nextWidth != 0.0f) {
+                    CastLaser();
+                }
+            }
+            lineRenderer.widthMultiplier = currentWidth;
+            yield return null;
+        }
+        if (nextWidth != 0.0f) {
+            flicker = true;
+        }
+        yield return null;
     }
 
     private void LaserWidthAnimation() {
@@ -134,5 +190,10 @@ public class LaserScript : MonoBehaviour {
             }
             StartCoroutine(player.Hurt(0, 2.0f));
         }
+    }
+
+    private void SetParticleEmission(bool value) {
+        ParticleSystem.EmissionModule emission = sparkParticleSystem.emission;
+        emission.enabled = value;
     }
 }
