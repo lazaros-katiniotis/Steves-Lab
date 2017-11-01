@@ -198,16 +198,6 @@ public class PlayerController : Actor {
             //roomOxygenText.text = "No Room";
         }
 
-        //if (dragging) {
-        //    Vector3 delta = objectDragged.transform.position - this.transform.position;
-        //    float distance = Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y);
-        //    if (boxGrabRange < distance) {
-        //        objectDragged.Toggle(this);
-        //    }
-        //}
-
-        UpdateDraggedObject();
-
         UpdatePlayerOxygenLevel();
         UpdatePlayerHitPoints();
 
@@ -216,60 +206,6 @@ public class PlayerController : Actor {
         velocity = movementDirection * speed * Time.fixedDeltaTime;
 
         UpdatePlayerGUI();
-    }
-
-    private float angularSpeed = 90;
-    private float targetRotationAngle = 0;
-    private float currentRotationAngle = 0;
-    private float rotationDirection = 0;
-
-    private bool keepUpdating = false;
-    private bool shouldStop = false;
-
-    private void UpdateDraggedObject() {
-        if (objectDragged) {
-            //StartCoroutine(LerpToDraggedObject());
-            if (keepUpdating) {
-                float deltaAngle = angularSpeed * Time.deltaTime * 5.0f;
-                if (rotationDirection == -1) {
-                    if (currentRotationAngle + deltaAngle >= targetRotationAngle) {
-                        if (!shouldStop) {
-                            deltaAngle = targetRotationAngle - currentRotationAngle;
-                            shouldStop = true;
-                        }
-                    }
-                } else {
-                    if (currentRotationAngle + deltaAngle <= targetRotationAngle) {
-                        if (!shouldStop) {
-                            deltaAngle = targetRotationAngle - currentRotationAngle;
-                            shouldStop = true;
-                        }
-                    }
-                }
-                currentRotationAngle += deltaAngle;
-
-                objectDragged.transform.RotateAround(circleCollider.bounds.center, Vector3.forward, deltaAngle);
-                objectDragged.GetInteractionScript().transform.Rotate(0, 0, -deltaAngle);
-
-                if (shouldStop) {
-                    keepUpdating = false;
-                }
-            }
-        }
-    }
-
-    private IEnumerator LerpToDraggedObject() {
-        float elapsed = 0.0f;
-        Collider[] colliders = objectDragged.GetInteractionScript().GetComponents<Collider>();
-        foreach (Collider col in colliders) {
-            //Vector3 minPoint = col.bounds.
-        }
-        while (elapsed < 1.0f) {
-            elapsed += Time.deltaTime;
-            //this.transform.position = Vector3.Lerp(this.transform.position, elapsed);
-            yield return null;
-        }
-        yield return null;
     }
 
     private float h;
@@ -304,28 +240,14 @@ public class PlayerController : Actor {
             v = Input.GetAxisRaw("Vertical");
 
         } else {
-            if (!keepUpdating) {
-                if (Input.GetButtonDown("Horizontal")) {
-                    //lastInteractedObject.transform.RotateAround(this.circleCollider.bounds.center, Vector3.forward, -90 * Input.GetAxisRaw("Horizontal"));
-                    rotationDirection = Input.GetAxisRaw("Horizontal");
-                    angularSpeed = -rotationDirection * 90.0f;
-                    targetRotationAngle += angularSpeed;
-                    shouldStop = false;
-                    keepUpdating = true;
-                }
-            }
             if (relativePosition.y == -1.0f) {
-                v = Input.GetAxisRaw("Vertical") * objectDragged.transform.up.y;
-                h = Input.GetAxisRaw("Vertical") * objectDragged.transform.up.x;
+                v = Input.GetAxisRaw("Vertical");
             } else if (relativePosition.y == 1.0f) {
-                v = -Input.GetAxisRaw("Vertical") * objectDragged.transform.up.y;
-                h = -Input.GetAxisRaw("Vertical") * objectDragged.transform.up.x;
+                v = -Input.GetAxisRaw("Vertical");
             } else if (relativePosition.x == -1.0f) {
-                v = Input.GetAxisRaw("Vertical") * objectDragged.transform.right.y;
-                h = Input.GetAxisRaw("Vertical") * objectDragged.transform.right.x;
+                h = Input.GetAxisRaw("Vertical");
             } else if (relativePosition.x == 1.0f) {
-                v = -Input.GetAxisRaw("Vertical") * objectDragged.transform.right.y;
-                h = -Input.GetAxisRaw("Vertical") * objectDragged.transform.right.x;
+                h = -Input.GetAxisRaw("Vertical");
             }
         }
 
@@ -498,18 +420,8 @@ public class PlayerController : Actor {
         return pickupCollider;
     }
 
-    //hardcoded
     public override void UpdateDraggingState(bool isDragging, Vector2 relativePosition, BoxScript obj) {
         dragging = isDragging;
-        //if (dragging == true) {
-        //    this.circleCollider.enabled = false;
-        //    this.boxCollider.enabled = true;
-        //    this.boxCollider.offset = offset;
-        //    this.boxCollider.size = size;
-        //} else {
-        //    this.boxCollider.enabled = false;
-        //    this.circleCollider.enabled = true;
-        //}
         this.relativePosition = relativePosition;
         objectDragged = obj;
     }
