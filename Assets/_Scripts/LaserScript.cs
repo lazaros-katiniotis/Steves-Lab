@@ -55,20 +55,29 @@ public class LaserScript : MonoBehaviour {
     private bool flicker;
 
     void Update() {
-        if (turnedOff == true && turnedOff != wasTurnedOff) {
-            StartCoroutine(ToggleLaserBeam(0.0f, false));
-        } else if (turnedOff == false && turnedOff != wasTurnedOff) {
-            StartCoroutine(ToggleLaserBeam(defaultWidth, true));
-        }
-
         if (flicker) {
             CastLaser();
             LaserWidthAnimation();
             LaserLightAnimation();
         }
-
-        wasTurnedOff = turnedOff;
     }
+
+    //public IEnumerator ParseState(LaserEmitterScript.LaserEmitterState state) {
+    //    switch (state.state) {
+    //        case LaserEmitterScript.LaserEmitterStateEnum.TURN_ON:
+    //        StartCoroutine(ToggleLaserBeam(nextWidth, true));
+    //        break;
+    //        case LaserEmitterScript.LaserEmitterStateEnum.TURN_OFF:
+    //        StartCoroutine(ToggleLaserBeam(0.0f, false));
+    //        break;
+    //        case LaserEmitterScript.LaserEmitterStateEnum.WAIT:
+    //        break;
+    //        case LaserEmitterScript.LaserEmitterStateEnum.ROTATE:
+    //        StartCoroutine(RotateLaserBeam(state.data.rotationMultiplier, state.data.duration));
+    //        break;
+    //    }
+    //    yield return null;
+    //}
 
     private IEnumerator ToggleLaserBeam(float nextWidth, bool shouldEmit) {
         float elapsed = 0.0f;
@@ -96,6 +105,17 @@ public class LaserScript : MonoBehaviour {
         yield return null;
     }
 
+    //private IEnumerator RotateLaserBeam(float rotationMultiplier, float duration) {
+    //    float elapsed = 0.0f;
+    //    while (elapsed <= duration) {
+    //        elapsed += Time.deltaTime;
+    //        float deltaAngle = Time.deltaTime * rotationMultiplier;
+    //        transform.Rotate(0, 0, deltaAngle);
+    //        sparkParticleSystem.transform.Rotate(deltaAngle, 0, 0);
+    //        yield return null;
+    //    }
+    //}
+
     private void LaserWidthAnimation() {
         widthElapsed += Time.deltaTime * 3.0f;
         currentWidth = AppHelper.PingPong(defaultWidth, nextWidth, widthElapsed);
@@ -111,11 +131,11 @@ public class LaserScript : MonoBehaviour {
         transform.Rotate(0, 0, angle);
     }
 
-    public void LaserRotation(float rotationSpeedMultiplier) {
-        float angle = Time.deltaTime * rotationSpeedMultiplier;
-        transform.Rotate(0, 0, angle);
-        sparkParticleSystem.transform.Rotate(angle, 0, 0);
-    }
+    //public void LaserRotation(float rotationSpeedMultiplier) {
+    //    float angle = Time.deltaTime * rotationSpeedMultiplier;
+    //    transform.Rotate(0, 0, angle);
+    //    sparkParticleSystem.transform.Rotate(angle, 0, 0);
+    //}
 
     private void CastLaser() {
         //Vector3 direction = target.transform.position - transform.position;
