@@ -26,20 +26,23 @@ public class LaserScript : MonoBehaviour {
     private PlayerController player;
     private Vector3 perpendicular;
 
-    public bool turnedOff;
-    private bool wasTurnedOff;
+    private LaserEmitterScript.LaserEmitterState state;
+
+    private bool stateHandled;
+
+    private LaserEmitterScript laserEmitter;
 
     private void Awake() {
         lineRenderer = GetComponent<LineRenderer>();
+        laserEmitter = GetComponentInParent<LaserEmitterScript>();
         currentWidth = defaultWidth;
         laserPointPosition = new Vector3(0, 0, -0.05f);
         sparkPosition = new Vector3(0, 0, -0.15f);
+        stateHandled = true;
     }
 
     public void Activate() {
         flicker = true;
-        turnedOff = false;
-        wasTurnedOff = false;
     }
 
     public void Deactivate() {
@@ -47,18 +50,41 @@ public class LaserScript : MonoBehaviour {
         lineRenderer.widthMultiplier = 0.0f;
         SetParticleEmission(false);
         laserLight.enabled = false;
-        turnedOff = true;
-        wasTurnedOff = true;
         currentWidth = 0.0f;
     }
 
     private bool flicker;
 
     void Update() {
+        HandleState(state.state, state.data);
+
         if (flicker) {
             CastLaser();
             LaserWidthAnimation();
             LaserLightAnimation();
+        }
+    }
+
+    private void HandleState(LaserEmitterScript.LaserEmitterStateEnum state, LaserEmitterScript.LaserEmitterData data) {
+        if (!stateHandled) {
+            stateHandled = true;
+            switch (state) {
+                case LaserEmitterScript.LaserEmitterStateEnum.TURN_ON:
+                StartCoroutine(ToggleLaserBeam(nextWidth, true));
+                break;
+                case LaserEmitterScript.LaserEmitterStateEnum.TURN_OFF:
+                StartCoroutine(ToggleLaserBeam(0.0f, false));
+                break;
+                case LaserEmitterScript.LaserEmitterStateEnum.WAIT:
+                break;
+                case LaserEmitterScript.LaserEmitterStateEnum.ROTATE:
+                StartCoroutine(RotateLaserBeam(data.rotationMultiplier, data.duration));
+                break;
+                default:
+                stateHandled = false;
+                laserEmitter.PrepareNextState();
+                break;
+            }
         }
     }
 
@@ -84,7 +110,7 @@ public class LaserScript : MonoBehaviour {
         flicker = false;
         bool entered = false;
         while (elapsed <= 1.0f) {
-            elapsed += Time.deltaTime;
+            elapsed += Time.deltaTime * 5.0f;
             currentWidth = Mathf.Lerp(currentWidth, nextWidth, elapsed);
             if (elapsed > 0.15f) {
                 if (!entered) {
@@ -102,19 +128,22 @@ public class LaserScript : MonoBehaviour {
         if (nextWidth != 0.0f) {
             flicker = true;
         }
+        laserEmitter.PrepareNextState();
         yield return null;
     }
 
-    //private IEnumerator RotateLaserBeam(float rotationMultiplier, float duration) {
-    //    float elapsed = 0.0f;
-    //    while (elapsed <= duration) {
-    //        elapsed += Time.deltaTime;
-    //        float deltaAngle = Time.deltaTime * rotationMultiplier;
-    //        transform.Rotate(0, 0, deltaAngle);
-    //        sparkParticleSystem.transform.Rotate(deltaAngle, 0, 0);
-    //        yield return null;
-    //    }
-    //}
+    private IEnumerator RotateLaserBeam(float rotationMultiplier, float duration) {
+        float elapsed = 0.0f;
+        while (elapsed <= duration) {
+            elapsed += Time.deltaTime;
+            float deltaAngle = Time.deltaTime * rotationMultiplier;
+            transform.Rotate(0, 0, deltaAngle);
+            sparkParticleSystem.transform.Rotate(deltaAngle, 0, 0);
+            yield return null;
+        }
+        laserEmitter.PrepareNextState();
+        yield return null;
+    }
 
     private void LaserWidthAnimation() {
         widthElapsed += Time.deltaTime * 3.0f;
@@ -129,6 +158,11 @@ public class LaserScript : MonoBehaviour {
 
     public void SetRotation(float angle) {
         transform.Rotate(0, 0, angle);
+    }
+
+    public void SetCurrentState(LaserEmitterScript.LaserEmitterState state) {
+        this.state = state;
+        stateHandled = false;
     }
 
     //public void LaserRotation(float rotationSpeedMultiplier) {

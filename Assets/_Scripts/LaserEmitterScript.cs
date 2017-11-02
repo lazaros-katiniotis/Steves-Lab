@@ -47,25 +47,13 @@ public class LaserEmitterScript : TogglableObject {
         } else {
             laserBeam.Deactivate();
         }
+
         queue = new Queue<LaserEmitterState>();
         for (int i = 0; i < states.Count; i++) {
-            Debug.Log("state[" + i + "]: " + states[i]);
             queue.Enqueue(states[i]);
         }
-        PrepareNextState();
-        StartCoroutine(HandleState());
-    }
 
-    private IEnumerator HandleState() {
-        float elapsed = 0.0f;
-        Debug.Log("current state: " + currentState.state);
-        laserBeam.StartCoroutine(laserBeam.ParseState(currentState));
-        while (elapsed <= currentState.data.duration) {
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
         PrepareNextState();
-        yield return StartCoroutine(HandleState());
     }
 
     void Start() {
@@ -84,6 +72,7 @@ public class LaserEmitterScript : TogglableObject {
 
     public void PrepareNextState() {
         currentState = queue.Dequeue();
+        laserBeam.SetCurrentState(currentState);
         queue.Enqueue(currentState);
     }
 }
