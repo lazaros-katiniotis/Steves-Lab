@@ -29,8 +29,12 @@ public class LaserScript : MonoBehaviour {
     private LaserEmitterScript.LaserEmitterState state;
 
     private bool stateHandled;
+    private bool emitting;
 
     private LaserEmitterScript laserEmitter;
+
+    private float currentAngle;
+    private float targetAngle;
 
     private void Awake() {
         lineRenderer = GetComponent<LineRenderer>();
@@ -43,6 +47,7 @@ public class LaserScript : MonoBehaviour {
 
     public void Activate() {
         flicker = true;
+        emitting = true;
     }
 
     public void Deactivate() {
@@ -51,13 +56,12 @@ public class LaserScript : MonoBehaviour {
         SetParticleEmission(false);
         laserLight.enabled = false;
         currentWidth = 0.0f;
+        emitting = false;
     }
 
     private bool flicker;
 
     void Update() {
-        HandleState(state.state, state.data);
-
         if (flicker) {
             CastLaser();
             LaserWidthAnimation();
@@ -65,9 +69,10 @@ public class LaserScript : MonoBehaviour {
         }
     }
 
-    private void HandleState(LaserEmitterScript.LaserEmitterStateEnum state, LaserEmitterScript.LaserEmitterData data) {
+    private IEnumerator HandleState(LaserEmitterScript.LaserEmitterStateEnum state, LaserEmitterScript.LaserEmitterData data) {
         if (!stateHandled) {
             stateHandled = true;
+            Debug.Log("CURRENT STATE: " + state);
             switch (state) {
                 case LaserEmitterScript.LaserEmitterStateEnum.TURN_ON:
                 StartCoroutine(ToggleLaserBeam(nextWidth, true));
@@ -78,7 +83,7 @@ public class LaserScript : MonoBehaviour {
                 case LaserEmitterScript.LaserEmitterStateEnum.WAIT:
                 break;
                 case LaserEmitterScript.LaserEmitterStateEnum.ROTATE:
-                StartCoroutine(RotateLaserBeam(data.rotationMultiplier, data.duration));
+                StartCoroutine(RotateLaserBeam(data.targetAngle, 10, data.duration));
                 break;
                 default:
                 stateHandled = false;
@@ -86,24 +91,8 @@ public class LaserScript : MonoBehaviour {
                 break;
             }
         }
+        yield return null;
     }
-
-    //public IEnumerator ParseState(LaserEmitterScript.LaserEmitterState state) {
-    //    switch (state.state) {
-    //        case LaserEmitterScript.LaserEmitterStateEnum.TURN_ON:
-    //        StartCoroutine(ToggleLaserBeam(nextWidth, true));
-    //        break;
-    //        case LaserEmitterScript.LaserEmitterStateEnum.TURN_OFF:
-    //        StartCoroutine(ToggleLaserBeam(0.0f, false));
-    //        break;
-    //        case LaserEmitterScript.LaserEmitterStateEnum.WAIT:
-    //        break;
-    //        case LaserEmitterScript.LaserEmitterStateEnum.ROTATE:
-    //        StartCoroutine(RotateLaserBeam(state.data.rotationMultiplier, state.data.duration));
-    //        break;
-    //    }
-    //    yield return null;
-    //}
 
     private IEnumerator ToggleLaserBeam(float nextWidth, bool shouldEmit) {
         float elapsed = 0.0f;
@@ -117,6 +106,7 @@ public class LaserScript : MonoBehaviour {
                     entered = true;
                     SetParticleEmission(shouldEmit);
                     laserLight.enabled = shouldEmit;
+                    emitting = shouldEmit;
                 }
                 if (nextWidth != 0.0f) {
                     CastLaser();
@@ -132,18 +122,74 @@ public class LaserScript : MonoBehaviour {
         yield return null;
     }
 
-    private IEnumerator RotateLaserBeam(float rotationMultiplier, float duration) {
-        float elapsed = 0.0f;
-        while (elapsed <= duration) {
-            elapsed += Time.deltaTime;
-            float deltaAngle = Time.deltaTime * rotationMultiplier;
+    private IEnumerator RotateLaserBeam(float next, float angularSpeed, float duration) {
+        targetAngle += next / 2;
+        if (Mathf.Abs(currentAngle) > 360) {
+            currentAngle = currentAngle % 360;
+            targetAngle = targetAngle % 360;
+        }
+
+        float minDelta = targetAngle - currentAngle;
+        float direction = Mathf.Sign(minDelta);
+
+        while (currentAngle != targetAngle) {
+            float deltaAngle = direction * angularSpeed * Time.deltaTime;
+            if (direction > 0) {
+                if (currentAngle + deltaAngle > targetAngle) {
+                    deltaAngle = targetAngle - currentAngle;
+                }
+            } else {
+                if (currentAngle + deltaAngle < targetAngle) {
+                    deltaAngle = targetAngle - currentAngle;
+                }
+            }
+
             transform.Rotate(0, 0, deltaAngle);
             sparkParticleSystem.transform.Rotate(deltaAngle, 0, 0);
+            currentAngle += deltaAngle;
             yield return null;
         }
         laserEmitter.PrepareNextState();
         yield return null;
     }
+
+    //private IEnumerator RotateLaserBeam(float next, float angularSpeed, float duration) {
+    //    float currentAngle = ((180 + this.transform.eulerAngles.z) % 360) - 180;
+    //    targetAngle += next;
+    //    targetAngle = ((180 + targetAngle) % 180);
+
+    //    Debug.Log("currentAngle: " + currentAngle);
+    //    Debug.Log("targetAngle: " + targetAngle);
+
+    //    float minDelta = targetAngle - currentAngle;
+    //    if (Mathf.Abs(minDelta) > ((180 + targetAngle) - currentAngle)) {
+    //        minDelta = (180 + targetAngle) - currentAngle;
+    //    }
+    //    float direction = Mathf.Sign(minDelta);
+
+    //    Debug.Log("minDelta: " + minDelta);
+    //    Debug.Log("direction: " + direction);
+
+    //    while (currentAngle != targetAngle) {
+    //        float deltaAngle = direction * angularSpeed * Time.deltaTime;
+    //        if (direction > 0) {
+    //            if (currentAngle + deltaAngle > targetAngle) {
+    //                deltaAngle = targetAngle - currentAngle;
+    //            }
+    //        } else {
+    //            if (currentAngle + deltaAngle < targetAngle) {
+    //                deltaAngle = targetAngle - currentAngle;
+    //            }
+    //        }
+
+    //        transform.Rotate(0, 0, deltaAngle);
+    //        sparkParticleSystem.transform.Rotate(deltaAngle, 0, 0);
+    //        currentAngle = ((180 + this.transform.eulerAngles.z) % 360) - 180;
+    //        yield return null;
+    //    }
+    //    laserEmitter.PrepareNextState();
+    //    yield return null;
+    //}
 
     private void LaserWidthAnimation() {
         widthElapsed += Time.deltaTime * 3.0f;
@@ -163,6 +209,7 @@ public class LaserScript : MonoBehaviour {
     public void SetCurrentState(LaserEmitterScript.LaserEmitterState state) {
         this.state = state;
         stateHandled = false;
+        StartCoroutine(HandleState(state.state, state.data));
     }
 
     //public void LaserRotation(float rotationSpeedMultiplier) {

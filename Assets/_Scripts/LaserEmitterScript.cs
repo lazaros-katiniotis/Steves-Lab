@@ -21,7 +21,7 @@ public class LaserEmitterScript : TogglableObject {
 
     [Serializable]
     public class LaserEmitterData {
-        public float rotationMultiplier;
+        public float targetAngle;
         public float duration;
     }
 
